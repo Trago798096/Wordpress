@@ -1,0 +1,90 @@
+### 🎯 Core Objective  
+_"Create a 100% error-free WordPress clone of https://iplbook.co.in/bookmyshow.com/ where admins can add matches & seat categories like WooCommerce products, with pixel-perfect UI and zero PHP warnings/errors."_
+
+---
+
+### 🔧 Critical Fixes Required  
+1. Undefined WP_Error Fix:  
+  
+   // In content-match.php (Line 34):  
+   $team = get_term($team_id);  
+   if (!is_wp_error($team) {  
+       echo $team->name; // Only access if not an error  
+   }  
+   
+ 
+2. Theme Structure Cleanup:  
+   - Remove typos in file paths (e.g., ipl-ticket- theme → ipl-ticket-theme).  
+   - Validate all WP_Query calls with !is_wp_error().  
+
+---
+
+### 📜 Detailed Requirements  
+
+#### 1. WooCommerce-Style Match Management  
+- **Custom Post Type Matches with Fields:**  
+ 
+  // Match Details (Like Product)  
+  'match_date' => DateTime Picker,  
+  'stadium' => Dropdown (Wankhede, Ekana, etc.),  
+  'seat_categories' => Repeater Field (  
+      'type' => VIP/Premium/General,  
+      'price' => Number,  
+      'seats_available' => Number,  
+      'seat_map_image' => Upload (SVG/PNG)  
+  )  
+  
+Admin UI:I:**  
+  - Matches list with filters (date, stadium, team).  
+  - Seat inventory management (like WooCommerce stock).  
+
+#2. Pixel-Perfect UI Clonene** Header:r:**  
+  - Sticky menu with logo, "Book Now" CTA (exact hex color #ff4e00).  
+  - Mobile hamburger menu (breakpoint: 768px). Homepage Sections:s:**  
+  - Hero Slider with editable text overlay ("TATA IPL 2025").  
+  - Match cards grid (team logos, "Hurry! Only X seats left" badge). Booking Flow:w:**  
+  - Seat selection page with stadium map (SVG clickable zones).  
+  - Booking summary (as per 1000080125.jpg) with GST calculation.  
+
+#3. Payment Gateway Integrationon** Indian Payment Methods:s:**  
+  - UPI/QR (Razorpay/Paytm API).  
+  - Credit Cards & Wallets (WooCommerce compatible). Dynamic Pricing:g:**  
+ 
+  // Calculate total with GST (18%) + service fee:  
+  $total = ($ticket_price * $qty) + ($ticket_price * 0.18) + 75;  
+  
+ 
+
+#4. Theme & Performancece**  
+- **Custom Theme iplpro:**  
+ 
+  /themes/iplpro/  
+  ├── inc/  
+  │   ├── custom-post-types.php  
+  │   └── admin-settings.php (Customizer API)  
+  ├── template-parts/  
+  │   ├── header-match.php  
+  │   └── booking-summary.php  
+  └── assets/ (SCSS, JS)  
+  
+ 
+- **Optimizations:**  
+  - Lazy load slider images.  
+  - Minify CSS/JS with wp_enqueue_script('script', 'path.js', [], '1.0', true);.  
+
+#### **5. Admin Control (Like WooEditable via WordPress Customizer:ss Customizer:**  
+  - Homepage slider images/text.  
+  - Footer partners (ATTEMPT, AUTHORITY logos).  
+  - Payment gateway settings (RazorpayUser Roles: **UserStadium Manager:adium Manager:** Can update seat availability for assigned match🔍 QA Checklist for Cursor AI for CPHP Error Checks: Error Checks:**  
+   - Test all get_term(), get_post_meta() calls with !is_wp_error().  
+2. **UI Validation:**  
+   - Overlay homepage screenshots on original site (DevTools → Toggle dePayment Test:3. **Payment Test:**  
+   - Simulate UPI payment flow with test crede🚨 User Notes for Cursor AIotes fIf Errors Persist:If Errors Persist:**  
+   - _"Debug content-match.php line 34. Ensure $team_id is valid and not empty."_  
+   - _"Add error logging: error_log(print_r($team, true));".  
+2. **Deliverables:**  
+   - ZIP file: Theme + child theme + required plugins list.  
+   - Step-by-step admin guide (PDF wit✅ Final Output:---
+
+**100% functional clone*100% functional clone** with admin controls matching WooCommerce’s Zero PHP warnings/errorsro PHP warnings/errors** in debug.log.  
+- 1:1 UI/UX parityith **1:1 UI/UX parity**.
