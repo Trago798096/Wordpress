@@ -1,0 +1,124 @@
+**🚀 Complete WordPress IPL Ticket Booking Clone Prompt for Cursor AI**  
+*(Copy-Paste This to Cursor AI to Fix Errors & Build the Site)*  
+
+---
+
+### **🎯 Objective**  
+Create a **100% pixel-perfect clone** of `https://iplbook.co.in/bookmyshow.com/` on WordPress with:  
+1. **Zero PHP errors** (e.g., `WP_Error` warnings).  
+2. **Manual payment system** (dynamic QR codes, UPI app redirects, UTR verification).  
+3. **WooCommerce-style admin controls** for matches & seats.  
+
+---
+
+### **🔧 Critical Fixes Required**  
+**1. PHP Error Fix (`content-match.php`):**  
+```php  
+// Before:  
+echo $team->name;  
+
+// After:  
+$team = get_term($team_id);  
+if (!is_wp_error($team) {  
+    echo esc_html($team->name);  
+} else {  
+    echo "Team Name";  
+}  
+```  
+
+**2. Theme Optimization:**  
+- Rename theme folder `ipl-ticket- theme` → `ipl-ticket-theme`.  
+- Minify CSS/JS using `wp_enqueue_script( 'script', 'path.js', [], '1.0', true );`.  
+
+---
+
+### **📋 Core Features**  
+#### **1. Admin Panel (WooCommerce-Style)**  
+- **Custom Post Type:** `Matches`  
+  - Fields:  
+    - **Match Date** (DateTime Picker)  
+    - **Stadium** (Dropdown: Wankhede, Ekana, etc.)  
+    - **Seat Categories** (Repeater Field: Type, Price, Seats Available, QR Code)  
+- **Role-Based Access:**  
+  - Admins: Add/Edit matches.  
+  - Stadium Managers: Update seat availability.  
+
+#### **2. Dynamic Payment System**  
+- **Dynamic QR Code:**  
+  ```php  
+  // Generate QR with price & UPI ID  
+  $qr_url = "https://api.qrcode-monkey.com/qr/custom?data=upi://pay?pa=ipl@upi&am=$total&tn=IPLTicket";  
+  <img src="<?php echo $qr_url; ?>" alt="Scan to Pay">  
+  ```  
+- **UPI App Redirect:**  
+  ```html  
+  <a href="upi://pay?pa=ipl@upi&am=<?php echo $total; ?>&tn=IPLTicket" class="upi-button">  
+    Pay via GPay/PhonePe  
+  </a>  
+  ```  
+- **UTR Verification:**  
+  - User submits UTR after payment.  
+  - Admin manually verifies via WordPress dashboard.  
+
+#### **3. Pixel-Perfect UI**  
+- **Header:**  
+  - Sticky menu with logo (editable via Customizer).  
+  - "Book Now" button (color: `#ff4e00`, font: `Poppins`).  
+- **Homepage:**  
+  - Hero slider with auto-play & editable text overlay.  
+  - Match cards with team logos, countdown timer, "Hurry! X seats left".  
+- **Seat Selection:**  
+  - Stadium map (SVG image with clickable zones).  
+  - Real-time seat availability check.  
+
+#### **4. Responsive Design**  
+- Mobile-first CSS.  
+- Hamburger menu for mobile (breakpoint: 768px).  
+
+---
+
+### **⚙️ Technical Setup**  
+**1. Theme Structure:**  
+```  
+/ipl-ticket-theme/  
+├── inc/  
+│   ├── custom-post-types.php  
+│   └── payment-manual.php (QR/UTR logic)  
+├── template-parts/  
+│   ├── header-match.php  
+│   └── booking-summary.php  
+└── assets/  
+    ├── scss/ (Poppins font, #ff4e00 buttons)  
+    └── js/ (Countdown timer, seat selection)  
+```  
+
+**2. Plugins Required:**  
+- **Advanced Custom Fields Pro** (for seat management).  
+- **WP QR Code Generator** (dynamic QR codes).  
+
+**3. Security:**  
+- Sanitize all inputs:  
+  ```php  
+  $utr = sanitize_text_field($_POST['utr']);  
+  ```  
+
+---
+
+### **✅ QA Checklist for Cursor AI**  
+1. **Test PHP Errors:**  
+   - Enable `define('WP_DEBUG', true);` → Check `debug.log`.  
+2. **Test Payment Flow:**  
+   - Scan QR → Redirect to UPI app → Submit dummy UTR → Verify in admin panel.  
+3. **Mobile Responsiveness:**  
+   - Test on iPhone SE (320px) & iPad (768px).  
+
+---
+
+### **📤 Deliverables**  
+1. **Theme ZIP File:** Error-free, optimized theme.  
+2. **Admin Guide:**  
+   - How to add matches & seats.  
+   - How to verify UTR payments.  
+
+**Prompt Cursor AI:**  
+_"Fix PHP errors → Build UI → Integrate payment → Generate ZIP. Report progress after each step

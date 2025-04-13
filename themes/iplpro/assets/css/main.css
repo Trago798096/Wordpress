@@ -1,35 +1,54 @@
 /**
  * Main stylesheet for IPL Pro Theme
  * 
- * @package iplpro
+ * Contains all styles for desktop and tablet views
  */
 
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ---------- Variables ---------- */
+:root {
+    --primary-color: #ff4e00;
+    --secondary-color: #1a2a47;
+    --bg-color: #f5f5f5;
+    --bg-light: #ffffff;
+    --text-color: #333333;
+    --text-light: #777777;
+    --border-color: #e5e5e5;
+    --success-color: #46b450;
+    --error-color: #dc3232;
+    --warning-color: #ffb900;
+    --info-color: #00a0d2;
+    --font-main: 'Poppins', sans-serif;
+    --border-radius: 4px;
+    --box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #333;
-    background-color: #f5f5f5;
+/* ---------- Base Styles ---------- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    font-family: var(--font-main);
     line-height: 1.6;
 }
 
+body {
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    font-family: var(--font-main);
+}
+
 a {
-    color: #ff4e00;
+    color: var(--primary-color);
     text-decoration: none;
     transition: color 0.3s ease;
 }
 
-a:hover {
-    color: #cc3e00;
-}
-
-ul {
-    list-style: none;
+a:hover, a:focus {
+    color: var(--secondary-color);
 }
 
 img {
@@ -37,10 +56,35 @@ img {
     height: auto;
 }
 
-/* Header styles */
+button, input, select, textarea {
+    font-family: var(--font-main);
+}
+
+/* ---------- Layout ---------- */
+.site {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.site-content {
+    flex: 1;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.site-main {
+    padding: 40px 0;
+}
+
+/* ---------- Header ---------- */
 .site-header {
-    background-color: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    background-color: var(--bg-light);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
@@ -51,8 +95,6 @@ img {
     justify-content: space-between;
     align-items: center;
     padding: 15px 20px;
-    max-width: 1200px;
-    margin: 0 auto;
 }
 
 .site-branding {
@@ -60,198 +102,382 @@ img {
     align-items: center;
 }
 
+.site-logo {
+    max-height: 60px;
+    margin-right: 15px;
+}
+
 .site-title {
     font-size: 24px;
+    font-weight: 700;
     margin: 0;
 }
 
-.logo-text {
-    font-weight: 700;
-    color: #1a2a47;
+.site-title a {
+    color: var(--secondary-color);
+    text-decoration: none;
 }
 
-.logo-text span {
-    color: #ff4e00;
+.site-title span {
+    color: var(--primary-color);
 }
 
-.main-navigation {
-    display: flex;
-    align-items: center;
-}
-
-.menu-toggle {
+.site-description {
     display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
 }
 
-#site-navigation ul {
+/* ---------- Navigation ---------- */
+.main-navigation {
+    flex: 1;
+    text-align: right;
+}
+
+.main-navigation ul {
     display: flex;
-    gap: 20px;
-    margin-right: 20px;
+    justify-content: flex-end;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-#site-navigation a {
-    color: #1a2a47;
+.main-navigation li {
+    margin-left: 20px;
+    position: relative;
+}
+
+.main-navigation a {
+    color: var(--secondary-color);
     font-weight: 500;
+    text-decoration: none;
     padding: 5px 0;
     position: relative;
 }
 
-#site-navigation a:after {
+.main-navigation a:hover {
+    color: var(--primary-color);
+}
+
+.main-navigation a::after {
     content: '';
     position: absolute;
     width: 0;
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #ff4e00;
-    transition: width 0.3s;
+    background-color: var(--primary-color);
+    transition: width 0.3s ease;
 }
 
-#site-navigation a:hover:after {
+.main-navigation a:hover::after {
     width: 100%;
 }
 
 .book-btn {
-    background-color: #ff4e00;
-    color: #fff;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-weight: 600;
     display: inline-block;
-    transition: background-color 0.3s ease;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 8px 20px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
 }
 
 .book-btn:hover {
-    background-color: #e63e00;
+    background-color: var(--secondary-color);
     color: #fff;
+    transform: translateY(-2px);
 }
 
-/* Footer styles */
+.menu-toggle {
+    display: none;
+}
+
+/* ---------- Footer ---------- */
 .site-footer {
-    background-color: #1a2a47;
+    background-color: var(--secondary-color);
     color: #fff;
     padding: 40px 0 20px;
     margin-top: 40px;
 }
 
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
-
-.footer-partners {
+.footer-content {
     display: flex;
-    justify-content: space-around;
     flex-wrap: wrap;
-    gap: 30px;
-    margin-bottom: 30px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    justify-content: space-between;
 }
 
-.partner-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
+.footer-column {
+    flex: 1;
+    min-width: 200px;
+    margin-bottom: 20px;
+    padding-right: 20px;
 }
 
-.partner-title {
-    font-size: 12px;
-    color: #aaa;
-    margin-bottom: 10px;
+.footer-logo {
+    max-width: 180px;
+    margin-bottom: 15px;
 }
 
-.partner-logo {
-    max-height: 50px;
-    width: auto;
+.footer-title {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 15px;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.footer-title::after {
+    content: '';
+    position: absolute;
+    width: 40px;
+    height: 2px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 0;
 }
 
 .footer-menu {
-    margin-bottom: 20px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
-.footer-menu ul {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 20px;
+.footer-menu li {
+    margin-bottom: 10px;
 }
 
 .footer-menu a {
-    color: #ddd;
-    font-size: 14px;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .footer-menu a:hover {
-    color: #fff;
-    text-decoration: underline;
+    color: var(--primary-color);
 }
 
-.footer-copyright {
+.footer-social {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.footer-social a {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 20px;
+    transition: color 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: var(--primary-color);
+}
+
+.footer-bottom {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     text-align: center;
     font-size: 14px;
-    color: #aaa;
-    padding-top: 20px;
+    color: rgba(255, 255, 255, 0.7);
 }
 
-/* Match card styles */
-.match-card {
-    background-color: #fff;
-    border-radius: 8px;
-    overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-}
-
-.match-header {
-    background-color: #ff4e00;
+/* ---------- Homepage ---------- */
+.hero-section {
+    position: relative;
+    background-color: var(--secondary-color);
     color: #fff;
-    padding: 10px 15px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    overflow: hidden;
+}
+
+.hero-slider {
+    position: relative;
+}
+
+.hero-slide {
+    display: none;
+    position: relative;
+}
+
+.hero-slide.active {
+    display: block;
+}
+
+.hero-image {
+    width: 100%;
+    height: 500px;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    transform: translateY(-50%);
+    text-align: center;
+    padding: 0 20px;
+    z-index: 2;
+}
+
+.hero-title {
+    font-size: 42px;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+}
+
+.hero-description {
+    font-size: 18px;
+    max-width: 600px;
+    margin: 0 auto 30px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.hero-button {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.hero-button:hover {
+    background-color: #fff;
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.slider-nav {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 3;
+}
+
+.slider-dot {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.slider-dot.active {
+    background-color: #fff;
+}
+
+.section-title {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 3px;
+    background-color: var(--primary-color);
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.section-description {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 40px;
+    color: var(--text-light);
+}
+
+.upcoming-matches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.match-card {
+    background-color: var(--bg-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .match-date {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 10px 15px;
     display: flex;
     align-items: center;
-    gap: 5px;
-    font-weight: 500;
 }
 
-.match-time {
+.date-icon {
+    margin-right: 10px;
+}
+
+.date-text {
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.time-text {
+    margin-left: auto;
     font-size: 14px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.match-content {
-    padding: 20px;
 }
 
 .match-teams {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    padding: 20px;
 }
 
-.team-info {
+.team {
     text-align: center;
-    width: 40%;
+    flex: 1;
 }
 
 .team-logo {
     width: 80px;
     height: 80px;
-    margin-bottom: 10px;
-    object-fit: contain;
+    margin: 0 auto 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.team-logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.team-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #f0f0f0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 700;
+    color: var(--secondary-color);
 }
 
 .team-name {
@@ -259,323 +485,947 @@ img {
     font-size: 14px;
 }
 
-.versus {
+.vs-badge {
+    width: 30px;
+    height: 30px;
+    background-color: var(--secondary-color);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     font-weight: 700;
-    font-size: 18px;
-    color: #777;
+    font-size: 12px;
+    margin: 0 10px;
 }
 
 .match-venue {
-    display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    color: #666;
+    padding: 0 20px 15px;
+    color: var(--text-light);
     font-size: 14px;
-    margin-bottom: 10px;
 }
 
 .venue-icon {
-    color: #ff4e00;
-    font-size: 18px;
+    color: var(--primary-color);
+    margin-right: 5px;
 }
 
-.match-status {
+.match-actions {
+    padding: 15px 20px;
+    background-color: #f9f9f9;
+    border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 15px;
 }
 
-.seats-left {
-    background-color: #ffe9e0;
-    color: #ff4e00;
+.availability-label {
     font-size: 12px;
-    font-weight: 600;
-    padding: 5px 10px;
-    border-radius: 4px;
+    color: var(--success-color);
+    display: flex;
+    align-items: center;
 }
 
-/* Ticket booking button */
+.availability-label.sold-out {
+    color: var(--error-color);
+}
+
+.availability-label i {
+    margin-right: 5px;
+}
+
 .book-ticket-btn {
-    background-color: #ff4e00;
+    display: inline-block;
+    background-color: var(--primary-color);
     color: #fff;
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    font-size: 14px;
     font-weight: 600;
-    cursor: pointer;
-    display: block;
-    text-align: center;
     transition: background-color 0.3s ease;
 }
 
 .book-ticket-btn:hover {
-    background-color: #e63e00;
+    background-color: var(--secondary-color);
+    color: #fff;
 }
 
-/* Stadium map section */
-.stadium-map-container {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
+.view-match-btn {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: var(--border-radius);
+    font-size: 14px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.view-match-btn:hover {
+    background-color: var(--text-color);
+    color: #fff;
+}
+
+.view-all-matches {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.view-all-btn {
+    display: inline-block;
+    background-color: var(--secondary-color);
+    color: #fff;
+    padding: 10px 25px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.view-all-btn:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.features-section {
+    padding: 60px 0;
+    background-color: #f9f9f9;
+}
+
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+.feature-card {
+    background-color: var(--bg-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 30px;
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+}
+
+.feature-icon {
+    font-size: 40px;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.feature-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.feature-description {
+    color: var(--text-light);
+    font-size: 15px;
+}
+
+/* ---------- Match Single ---------- */
+.match-details {
+    background-color: var(--bg-light);
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
     margin-bottom: 30px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.match-header {
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 30px 20px;
+}
+
+.match-teams {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.team-home, .team-away {
+    text-align: center;
+    flex: 1;
+}
+
+.vs-container {
+    padding: 0 20px;
+}
+
+.vs-text {
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.team-name {
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.match-meta {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.match-date-time, .match-venue {
+    display: flex;
+    align-items: center;
+}
+
+.meta-icon {
+    margin-right: 10px;
+    color: var(--primary-color);
+}
+
+/* ---------- Seat Selection ---------- */
+.seat-selection-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+}
+
+.stadium-map-container {
+    flex: 2;
+    min-width: 300px;
+    background-color: var(--bg-light);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.stadium-map-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .stadium-map {
-    max-width: 600px;
-    margin: 0 auto;
-    position: relative;
-    user-select: none;
+    max-width: 100%;
+    overflow: auto;
 }
 
 .stadium-map svg {
-    width: 100%;
+    max-width: 100%;
     height: auto;
+    transition: transform 0.3s ease;
 }
 
 .map-section {
-    transition: fill 0.3s ease;
     cursor: pointer;
+    transition: fill 0.3s ease, opacity 0.3s ease;
 }
 
 .map-section:hover {
-    fill: #ff4e00 !important;
     opacity: 0.8;
 }
 
-.map-legend {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 10px;
-    margin-top: 20px;
-    font-size: 14px;
+.map-section.selected {
+    stroke-width: 3;
+    stroke: #000;
 }
 
-.legend-item {
+.zoom-controls {
+    position: absolute;
+    top: 20px;
+    right: 20px;
     display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.zoom-btn {
+    width: 30px;
+    height: 30px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-.legend-color {
-    width: 15px;
-    height: 15px;
-    border-radius: 3px;
+.zoom-btn:hover {
+    background-color: #fff;
 }
 
-/* Ticket types section */
-.ticket-types-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 15px;
+.selection-message {
     margin-top: 20px;
+    padding: 10px;
+    background-color: #f0f9ff;
+    border-radius: var(--border-radius);
+    text-align: center;
+}
+
+.ticket-categories {
+    flex: 1;
+    min-width: 300px;
+    background-color: var(--bg-light);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.ticket-categories-title {
+    margin-bottom: 10px;
+}
+
+.ticket-categories-subtitle {
+    color: var(--text-light);
+    margin-bottom: 20px;
+}
+
+.ticket-categories-grid {
+    display: grid;
+    gap: 15px;
 }
 
 .ticket-type-card {
-    border: 1px solid #eee;
-    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
     padding: 15px;
-    background-color: #fff;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .ticket-type-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
 }
 
 .ticket-type-card.selected {
-    border: 2px solid #ff4e00;
-    box-shadow: 0 5px 15px rgba(255,78,0,0.1);
+    border-color: var(--primary-color);
+    border-width: 2px;
+    background-color: rgba(255, 78, 0, 0.05);
 }
 
 .ticket-type-header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
 .ticket-type-name {
+    font-size: 16px;
     font-weight: 600;
+    margin: 0;
 }
 
 .ticket-price {
-    color: #ff4e00;
     font-weight: 700;
+    color: var(--primary-color);
 }
 
-.ticket-availability {
-    margin-top: 10px;
+.ticket-description {
     font-size: 14px;
-    color: #666;
-}
-
-/* Booking summary section */
-.booking-summary {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
-.booking-header {
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.booking-match-info {
-    display: grid;
-    grid-template-columns: 120px 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.booking-label {
-    color: #777;
-    font-size: 14px;
-}
-
-.booking-value {
-    font-weight: 500;
-}
-
-.booking-amount-details {
-    margin-top: 20px;
-}
-
-.amount-row {
-    display: flex;
-    justify-content: space-between;
+    color: var(--text-light);
     margin-bottom: 10px;
 }
 
-.amount-label {
-    color: #777;
+.ticket-availability {
+    font-size: 13px;
+    color: var(--text-color);
 }
 
-.amount-value {
+.availability-count {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.tab-navigation {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+    padding: 10px 20px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tab-button:hover {
+    color: var(--primary-color);
+}
+
+.tab-button.active {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* ---------- Booking Form ---------- */
+.booking-summary {
+    background-color: var(--bg-light);
+    padding: 20px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.booking-summary-title {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.booking-fields {
+    margin-bottom: 20px;
+}
+
+.ticket-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.ticket-type-field, .ticket-price-field, .ticket-quantity-field {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.quantity-control {
+    display: flex;
+    align-items: center;
+    max-width: 120px;
+}
+
+.quantity-btn {
+    width: 30px;
+    height: 30px;
+    background-color: #f0f0f0;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.quantity-btn:hover {
+    background-color: #e0e0e0;
+}
+
+.quantity-control input {
+    width: 40px;
+    text-align: center;
+    border: none;
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+.booking-total {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.total-amount {
+    font-size: 20px;
+    color: var(--primary-color);
+}
+
+.form-fields {
+    margin-bottom: 20px;
+}
+
+.form-row {
+    margin-bottom: 15px;
+}
+
+.form-field label {
+    display: block;
+    margin-bottom: 5px;
     font-weight: 500;
 }
 
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    padding-top: 15px;
-    margin-top: 15px;
-    border-top: 1px solid #eee;
+.form-field input, .form-field select, .form-field textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.form-actions {
+    text-align: center;
+}
+
+.terms-text {
+    margin-bottom: 15px;
+    font-size: 14px;
+    color: var(--text-light);
+}
+
+.booking-submit-btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 16px;
     font-weight: 600;
-    font-size: 18px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-/* Payment section */
-.payment-section {
-    background-color: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+.booking-submit-btn:hover {
+    background-color: var(--secondary-color);
 }
 
+.booking-errors {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #ffebee;
+    border-radius: var(--border-radius);
+    border-left: 4px solid var(--error-color);
+}
+
+.error-message {
+    color: var(--error-color);
+    margin-bottom: 5px;
+}
+
+.error-message:last-child {
+    margin-bottom: 0;
+}
+
+/* ---------- Payment Page ---------- */
 .payment-options {
-    margin-top: 20px;
+    background-color: var(--bg-light);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.payment-title {
+    margin-bottom: 10px;
+}
+
+.payment-subtitle {
+    color: var(--text-light);
+    margin-bottom: 20px;
 }
 
 .payment-tabs {
     display: flex;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     margin-bottom: 20px;
 }
 
 .payment-tab {
     padding: 10px 20px;
     cursor: pointer;
-    border-bottom: 2px solid transparent;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.payment-tab:hover {
+    color: var(--primary-color);
 }
 
 .payment-tab.active {
-    border-bottom-color: #ff4e00;
+    color: #fff;
+    background-color: var(--primary-color);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+}
+
+.payment-icon {
+    width: 24px;
+    height: 24px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.upi-icon {
+    background-image: url('../images/upi-icon.png');
+}
+
+.card-icon {
+    background-image: url('../images/card-icon.png');
+}
+
+.wallet-icon {
+    background-image: url('../images/wallet-icon.png');
+}
+
+.tab-pane {
+    display: none;
+    padding: 20px 0;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+.upi-info {
+    text-align: center;
+    margin-bottom: 20px;
     font-weight: 500;
 }
 
-.payment-content {
-    padding: 15px 0;
+.qr-code-container {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.upi-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    max-width: 300px;
-    margin: 0 auto;
+.qr-code-image {
+    max-width: 250px;
+    height: auto;
+    margin-bottom: 15px;
 }
 
-.qr-code {
-    margin-bottom: 20px;
-    border: 1px solid #eee;
-    padding: 10px;
-    background-color: #fff;
+.scan-text {
+    font-size: 14px;
+    color: var(--text-light);
 }
 
 .upi-apps {
+    margin-bottom: 30px;
+}
+
+.pay-with-upi {
+    text-align: center;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.upi-app-buttons {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-top: 15px;
 }
 
-.upi-app-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+.upi-app-button {
+    text-align: center;
 }
 
-/* Customer information form */
-.customer-info-form {
-    margin-top: 30px;
+.upi-app-button img {
+    width: 50px;
+    height: 50px;
+    object-fit: contain;
+    transition: transform 0.3s ease;
 }
 
-.form-group {
-    margin-bottom: 20px;
+.upi-app-button:hover img {
+    transform: scale(1.1);
 }
 
-.form-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
+.order-reference {
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: var(--border-radius);
+    margin-bottom: 30px;
 }
 
-.form-input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
+.reference-id {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-.form-input:focus {
-    outline: none;
-    border-color: #ff4e00;
-}
-
-.form-submit-btn {
-    background-color: #ff4e00;
-    color: #fff;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
+.ref-label {
     font-weight: 600;
+}
+
+.ref-value {
+    font-family: monospace;
+    padding: 5px 10px;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.copy-btn {
+    background-color: var(--secondary-color);
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: var(--border-radius);
     cursor: pointer;
-    display: block;
-    width: 100%;
-    max-width: 300px;
-    margin: 30px auto 0;
+    font-size: 12px;
     transition: background-color 0.3s ease;
 }
 
-.form-submit-btn:hover {
-    background-color: #e63e00;
+.copy-btn:hover {
+    background-color: var(--primary-color);
+}
+
+.amount-label {
+    font-weight: 500;
+}
+
+.amount-value {
+    font-weight: 700;
+    color: var(--primary-color);
+}
+
+.utr-form {
+    background-color: #fff;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.utr-field {
+    margin-bottom: 20px;
+}
+
+.utr-field label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.utr-field input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.utr-field input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+}
+
+.utr-help {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 5px;
+}
+
+.utr-submit {
+    text-align: center;
+}
+
+.utr-submit-btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 30px;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.utr-submit-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+.coming-soon {
+    text-align: center;
+    padding: 40px 0;
+    color: var(--text-light);
+}
+
+/* ---------- Order Confirmation ---------- */
+.order-confirmation {
+    background-color: var(--bg-light);
+    padding: 30px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    text-align: center;
+}
+
+.confirmation-icon {
+    font-size: 60px;
+    color: var(--success-color);
+    margin-bottom: 20px;
+}
+
+.confirmation-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.confirmation-subtitle {
+    color: var(--text-light);
+    margin-bottom: 30px;
+}
+
+.order-details {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.order-number, .transaction-number {
+    text-align: left;
+}
+
+.detail-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.detail-value {
+    display: block;
+    font-family: monospace;
+    font-size: 16px;
+}
+
+.ticket-details, .customer-details {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: var(--border-radius);
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.details-title {
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.match-teams {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.vs {
+    margin: 0 10px;
+    color: var(--text-light);
+}
+
+.match-info, .customer-info {
+    display: grid;
+    gap: 10px;
+}
+
+.match-date, .match-venue, .ticket-type-info, 
+.ticket-quantity, .ticket-price, .order-total,
+.customer-name, .customer-email {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.info-label {
+    font-weight: 500;
+    min-width: 120px;
+}
+
+.confirmation-message {
+    margin-bottom: 30px;
+}
+
+.confirmation-message p {
+    margin-bottom: 10px;
+}
+
+.confirmation-actions {
+    margin-top: 30px;
+}
+
+.home-btn {
+    display: inline-block;
+    background-color: var(--primary-color);
+    color: #fff;
+    padding: 12px 30px;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.home-btn:hover {
+    background-color: var(--secondary-color);
+}
+
+/* ---------- Utility Classes ---------- */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.mt-0 {
+    margin-top: 0;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.mt-20 {
+    margin-top: 20px;
+}
+
+.mt-30 {
+    margin-top: 30px;
+}
+
+.mb-0 {
+    margin-bottom: 0;
+}
+
+.mb-10 {
+    margin-bottom: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mb-30 {
+    margin-bottom: 30px;
 }

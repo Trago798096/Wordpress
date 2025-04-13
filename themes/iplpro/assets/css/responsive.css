@@ -1,17 +1,119 @@
 /**
  * Responsive styles for IPL Pro Theme
  * 
- * @package iplpro
+ * Contains all styles for mobile views (max-width: 768px)
  */
 
-/* Tablet and smaller (max-width: 992px) */
-@media (max-width: 992px) {
+/* ---------- Mobile Styles (max-width: 768px) ---------- */
+@media screen and (max-width: 768px) {
+    /* Layout */
+    .container {
+        padding: 0 15px;
+    }
+    
+    .site-main {
+        padding: 20px 0;
+    }
+    
+    /* Header */
     .header-container {
         padding: 10px 15px;
     }
     
+    .site-logo {
+        max-height: 40px;
+    }
+    
+    .site-title {
+        font-size: 20px;
+    }
+    
+    /* Navigation */
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: var(--secondary-color);
+        cursor: pointer;
+    }
+    
+    .main-navigation {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background-color: var(--bg-light);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+        display: none;
+        z-index: 1000;
+    }
+    
+    .main-navigation.active {
+        display: block;
+    }
+    
+    .main-navigation ul {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding: 10px 0;
+    }
+    
+    .main-navigation li {
+        margin: 0;
+        text-align: center;
+    }
+    
+    .main-navigation a {
+        display: block;
+        padding: 10px 20px;
+    }
+    
+    .main-navigation a::after {
+        display: none;
+    }
+    
+    .book-btn {
+        display: inline-block;
+        margin: 10px 20px;
+    }
+    
+    /* Footer */
+    .footer-content {
+        flex-direction: column;
+    }
+    
+    .footer-column {
+        width: 100%;
+        padding-right: 0;
+    }
+    
+    /* Homepage */
+    .hero-image {
+        height: 300px;
+    }
+    
+    .hero-content {
+        padding: 0 15px;
+    }
+    
+    .hero-title {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    .hero-description {
+        font-size: 16px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        font-size: 24px;
+        margin-bottom: 30px;
+    }
+    
     .match-teams {
-        flex-direction: row;
+        padding: 15px;
     }
     
     .team-logo {
@@ -19,216 +121,255 @@
         height: 60px;
     }
     
-    .stadium-map {
-        max-width: 100%;
-    }
-    
-    .ticket-types-grid {
-        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    }
-    
-    .footer-partners {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    
-    .partner-item {
-        width: 30%;
-        min-width: 150px;
-    }
-}
-
-/* Mobile devices (max-width: 768px) */
-@media (max-width: 768px) {
-    .site-title {
-        font-size: 20px;
-    }
-    
-    .menu-toggle {
-        display: block;
-        position: relative;
-        width: 24px;
-        height: 18px;
-    }
-    
-    .menu-icon, 
-    .menu-icon:before, 
-    .menu-icon:after {
-        background-color: #1a2a47;
-        content: '';
-        display: block;
-        height: 2px;
-        position: absolute;
-        transition: all 0.2s ease-in-out;
-        width: 100%;
-    }
-    
-    .menu-icon {
-        top: 8px;
-    }
-    
-    .menu-icon:before {
-        top: -8px;
-    }
-    
-    .menu-icon:after {
-        top: 8px;
-    }
-    
-    #site-navigation {
-        position: absolute;
-        top: 100%;
-        left: 0;
-        right: 0;
-        background-color: #fff;
-        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease;
-    }
-    
-    #site-navigation.active {
-        max-height: 300px;
-    }
-    
-    #site-navigation ul {
-        flex-direction: column;
-        padding: 10px 20px;
-        margin-right: 0;
-        gap: 10px;
-    }
-    
-    .main-navigation {
-        gap: 15px;
-    }
-    
-    .match-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-    
-    .match-teams {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .team-info {
-        width: 100%;
-    }
-    
-    .versus {
-        margin: 10px 0;
-    }
-    
-    .booking-match-info {
-        grid-template-columns: 1fr;
-    }
-    
-    .booking-label {
-        font-weight: 600;
-        margin-top: 10px;
-    }
-    
-    .payment-tabs {
-        flex-wrap: wrap;
-    }
-    
-    .payment-tab {
-        flex: 1 0 50%;
-        text-align: center;
-    }
-    
-    .footer-partners {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-    }
-    
-    .partner-item {
-        width: 100%;
-        max-width: 200px;
-    }
-    
-    .footer-menu ul {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-    }
-}
-
-/* Small mobile devices (max-width: 576px) */
-@media (max-width: 576px) {
-    .site-header {
-        padding: 5px 0;
-    }
-    
-    .header-container {
-        padding: 8px 10px;
-    }
-    
-    .book-btn {
-        padding: 6px 12px;
-        font-size: 14px;
-    }
-    
-    .match-card {
-        margin-bottom: 15px;
-    }
-    
-    .match-content {
-        padding: 15px;
-    }
-    
-    .team-logo {
-        width: 50px;
-        height: 50px;
+    .team-placeholder {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
     }
     
     .team-name {
         font-size: 12px;
     }
     
-    .stadium-map-container {
-        padding: 15px;
-    }
-    
-    .ticket-types-grid {
+    .features-grid {
         grid-template-columns: 1fr;
     }
     
-    .booking-summary, 
-    .payment-section {
+    /* Match Single */
+    .match-meta {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Seat Selection */
+    .seat-selection-container {
+        flex-direction: column;
+    }
+    
+    .stadium-map-container,
+    .ticket-categories {
+        width: 100%;
+    }
+    
+    .stadium-map {
+        max-height: 400px;
+        overflow-y: auto;
+    }
+    
+    .zoom-controls {
+        top: 10px;
+        right: 10px;
+    }
+    
+    .ticket-selection {
+        grid-template-columns: 1fr;
+    }
+    
+    /* Booking Form */
+    .booking-summary {
         padding: 15px;
     }
     
-    .amount-row {
+    .form-row {
+        margin-bottom: 10px;
+    }
+    
+    /* Payment Page */
+    .payment-options {
+        padding: 15px;
+    }
+    
+    .payment-tabs {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .payment-tab {
+        padding: 8px 15px;
+    }
+    
+    .upi-app-buttons {
+        gap: 10px;
+    }
+    
+    .order-reference {
+        flex-direction: column;
+    }
+    
+    /* Order Confirmation */
+    .order-confirmation {
+        padding: 15px;
+    }
+    
+    .order-details {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .match-info, .customer-info {
+        gap: 5px;
+    }
+    
+    .info-label {
+        min-width: 100px;
+    }
+}
+
+/* ---------- Small Mobile Styles (max-width: 480px) ---------- */
+@media screen and (max-width: 480px) {
+    /* Header */
+    .site-logo {
+        max-height: 30px;
+    }
+    
+    .site-title {
+        font-size: 18px;
+    }
+    
+    /* Homepage */
+    .hero-title {
+        font-size: 24px;
+    }
+    
+    .hero-description {
         font-size: 14px;
     }
     
-    .total-row {
+    .hero-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    /* Match Card */
+    .match-card {
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+    
+    .match-date {
+        padding: 8px 12px;
+        flex-wrap: wrap;
+    }
+    
+    .date-text {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .time-text {
+        margin-left: 0;
+    }
+    
+    .match-actions {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .book-ticket-btn, .view-match-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    /* Match Single */
+    .vs-text {
+        font-size: 20px;
+    }
+    
+    .team-name {
         font-size: 16px;
     }
     
-    .form-label {
+    /* Seat Selection */
+    .stadium-map-title,
+    .ticket-categories-title {
+        font-size: 18px;
+    }
+    
+    .ticket-type-card {
+        padding: 10px;
+    }
+    
+    .ticket-type-name {
         font-size: 14px;
     }
     
-    .form-input {
-        padding: 8px 10px;
+    /* Booking Form */
+    .booking-submit-btn {
+        width: 100%;
+    }
+    
+    /* Payment Page */
+    .qr-code-image {
+        max-width: 200px;
+    }
+    
+    .upi-app-buttons {
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    
+    .utr-field input {
+        padding: 10px;
         font-size: 14px;
     }
     
-    .form-submit-btn {
-        padding: 10px 15px;
+    .utr-submit-btn {
+        width: 100%;
+        padding: 10px 20px;
+    }
+    
+    /* Order Confirmation */
+    .confirmation-title {
+        font-size: 24px;
+    }
+    
+    .match-teams {
+        font-size: 16px;
+    }
+    
+    .detail-value {
         font-size: 14px;
     }
     
-    .site-footer {
-        padding: 30px 0 15px;
+    .home-btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* ---------- Tablet Styles (min-width: 769px) and (max-width: 1024px) ---------- */
+@media screen and (min-width: 769px) and (max-width: 1024px) {
+    /* Layout */
+    .container {
+        padding: 0 20px;
     }
     
-    .footer-copyright {
-        font-size: 12px;
+    /* Homepage */
+    .hero-title {
+        font-size: 36px;
+    }
+    
+    .upcoming-matches {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .features-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Seat Selection */
+    .stadium-map {
+        max-height: 600px;
+        overflow-y: auto;
+    }
+    
+    /* Booking Form */
+    .ticket-selection {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Payment Page */
+    .qr-code-image {
+        max-width: 220px;
     }
 }

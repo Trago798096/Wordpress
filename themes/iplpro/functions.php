@@ -1,237 +1,214 @@
 <?php
 /**
- * IPL Pro theme functions and definitions
- * 
+ * IPL Pro functions and definitions
+ *
  * @package iplpro
  */
 
-// Define theme constants
+// Define theme version
 define('IPLPRO_VERSION', '1.0.0');
-define('IPLPRO_DIR', get_template_directory());
-define('IPLPRO_URI', get_template_directory_uri());
 
-// Set up theme
+// Set up theme defaults and register support for various WordPress features
 function iplpro_setup() {
-    // Add theme support
+    // Add default posts and comments RSS feed links to head
+    add_theme_support('automatic-feed-links');
+
+    // Let WordPress manage the document title
     add_theme_support('title-tag');
+
+    // Enable support for Post Thumbnails on posts and pages
     add_theme_support('post-thumbnails');
-    add_theme_support('custom-logo', array(
-        'height'      => 60,
-        'width'       => 200,
-        'flex-height' => true,
-        'flex-width'  => true,
+
+    // Register navigation menus
+    register_nav_menus(array(
+        'primary' => esc_html__('Primary Menu', 'iplpro'),
+        'footer' => esc_html__('Footer Menu', 'iplpro'),
     ));
+
+    // Switch default core markup to output valid HTML5
     add_theme_support('html5', array(
         'search-form',
         'comment-form',
         'comment-list',
         'gallery',
         'caption',
+        'style',
+        'script',
     ));
 
-    // Register navigation menus
-    register_nav_menus(array(
-        'primary' => esc_html__('Primary Menu', 'iplpro'),
-        'footer'  => esc_html__('Footer Menu', 'iplpro'),
+    // Set up the WordPress core custom background feature
+    add_theme_support('custom-background', array(
+        'default-color' => 'f5f5f5',
+    ));
+
+    // Add theme support for selective refresh for widgets
+    add_theme_support('customize-selective-refresh-widgets');
+
+    // Add support for editor styles
+    add_theme_support('editor-styles');
+
+    // Add support for custom logo
+    add_theme_support('custom-logo', array(
+        'height'      => 80,
+        'width'       => 200,
+        'flex-width'  => true,
+        'flex-height' => true,
     ));
 }
 add_action('after_setup_theme', 'iplpro_setup');
 
-// Enqueue scripts and styles
+// Set the content width in pixels
+function iplpro_content_width() {
+    $GLOBALS['content_width'] = apply_filters('iplpro_content_width', 1200);
+}
+add_action('after_setup_theme', 'iplpro_content_width', 0);
+
+/**
+ * Enqueue scripts and styles
+ */
 function iplpro_scripts() {
-    // Enqueue styles
-    wp_enqueue_style('iplpro-main', IPLPRO_URI . '/assets/css/main.css', array(), IPLPRO_VERSION);
-    wp_enqueue_style('iplpro-responsive', IPLPRO_URI . '/assets/css/responsive.css', array(), IPLPRO_VERSION);
+    // Enqueue Google Fonts - Poppins
+    wp_enqueue_style('iplpro-google-fonts', 'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap', array(), null);
     
-    // Enqueue scripts
-    wp_enqueue_script('jquery');
-    wp_enqueue_script('iplpro-main', IPLPRO_URI . '/assets/js/main.js', array('jquery'), IPLPRO_VERSION, true);
+    // Main stylesheet
+    wp_enqueue_style('iplpro-style', get_stylesheet_uri(), array(), IPLPRO_VERSION);
     
-    // Stadium map script only on seat selection page
-    if (is_page_template('page-select-seats.php')) {
-        wp_enqueue_script('iplpro-stadium-map', IPLPRO_URI . '/assets/js/stadium-map.js', array('jquery'), IPLPRO_VERSION, true);
+    // Theme CSS
+    wp_enqueue_style('iplpro-main', get_template_directory_uri() . '/assets/css/main.css', array(), IPLPRO_VERSION);
+    
+    // Responsive CSS
+    wp_enqueue_style('iplpro-responsive', get_template_directory_uri() . '/assets/css/responsive.css', array(), IPLPRO_VERSION);
+    
+    // Main JavaScript
+    wp_enqueue_script('iplpro-main', get_template_directory_uri() . '/assets/js/main.js', array(), IPLPRO_VERSION, true);
+    
+    // Stadium map JavaScript (only on seat selection page)
+    if (is_page('select-seats')) {
+        wp_enqueue_script('iplpro-stadium-map', get_template_directory_uri() . '/assets/js/stadium-map.js', array(), IPLPRO_VERSION, true);
     }
     
-    // Booking script only on booking pages
-    if (is_page_template('page-booking-summary.php') || is_page_template('page-payment.php')) {
-        wp_enqueue_script('iplpro-booking', IPLPRO_URI . '/assets/js/booking.js', array('jquery'), IPLPRO_VERSION, true);
+    // Booking JavaScript (only on booking pages)
+    if (is_page(array('select-seats', 'booking-summary', 'payment'))) {
+        wp_enqueue_script('iplpro-booking', get_template_directory_uri() . '/assets/js/booking.js', array(), IPLPRO_VERSION, true);
     }
-    
-    // Localize script with booking data
-    wp_localize_script('iplpro-booking', 'iplpro_booking', array(
-        'ajax_url' => admin_url('admin-ajax.php'),
-        'nonce'    => wp_create_nonce('iplpro_booking_nonce'),
-    ));
+
+    // Thread comments
+    if (is_singular() && comments_open() && get_option('thread_comments')) {
+        wp_enqueue_script('comment-reply');
+    }
 }
 add_action('wp_enqueue_scripts', 'iplpro_scripts');
 
-// Admin styles and scripts
-function iplpro_admin_scripts() {
-    wp_enqueue_style('iplpro-admin', IPLPRO_URI . '/assets/css/admin.css', array(), IPLPRO_VERSION);
-    wp_enqueue_script('iplpro-admin', IPLPRO_URI . '/assets/js/admin.js', array('jquery'), IPLPRO_VERSION, true);
-}
-add_action('admin_enqueue_scripts', 'iplpro_admin_scripts');
+/**
+ * Custom template tags for this theme.
+ */
+require get_template_directory() . '/inc/template-tags.php';
 
-// Include required files
-require_once IPLPRO_DIR . '/inc/custom-post-types.php';
-require_once IPLPRO_DIR . '/inc/acf-fields.php';
-require_once IPLPRO_DIR . '/inc/admin-settings.php';
-require_once IPLPRO_DIR . '/inc/razorpay-integration.php';
+/**
+ * Functions which enhance the theme by hooking into WordPress.
+ */
+require get_template_directory() . '/inc/template-functions.php';
 
-// Utility function to check if a term exists and is not a WP_Error
-function iplpro_get_valid_term($term_id, $taxonomy = 'team') {
-    if (empty($term_id)) {
-        return false;
-    }
-    
-    $term = get_term($term_id, $taxonomy);
-    
-    if (is_wp_error($term) || !$term) {
-        // Log the error for debugging
-        if (is_wp_error($term)) {
-            error_log('IPL Pro: Term error - ' . $term->get_error_message());
-        }
-        return false;
-    }
-    
-    return $term;
-}
+/**
+ * Custom Post Types.
+ */
+require get_template_directory() . '/inc/custom-post-types.php';
 
-// Utility function to get match details with proper error handling
-function iplpro_get_match_details($match_id) {
-    if (empty($match_id)) {
-        return false;
-    }
-    
-    $match = get_post($match_id);
-    
-    if (!$match || $match->post_type !== 'match') {
-        return false;
-    }
-    
-    // Get match meta data with ACF
-    $match_date = get_field('match_date', $match_id);
-    $stadium_id = get_field('stadium', $match_id);
-    $team1_id = get_field('team_1', $match_id);
-    $team2_id = get_field('team_2', $match_id);
-    
-    // Get term objects with error handling
-    $stadium = iplpro_get_valid_term($stadium_id, 'stadium');
-    $team1 = iplpro_get_valid_term($team1_id);
-    $team2 = iplpro_get_valid_term($team2_id);
-    
-    // Get seat categories
-    $seat_categories = get_field('seat_categories', $match_id);
-    
-    if (!$match_date || !$stadium || !$team1 || !$team2 || !$seat_categories) {
-        return false;
-    }
-    
-    return array(
-        'id' => $match_id,
-        'title' => $match->post_title,
-        'date' => $match_date,
-        'stadium' => $stadium,
-        'team1' => $team1,
-        'team2' => $team2,
-        'seat_categories' => $seat_categories,
+/**
+ * ACF Fields configuration.
+ */
+require get_template_directory() . '/inc/acf-fields.php';
+
+/**
+ * QR Code and Payment Integration.
+ */
+require get_template_directory() . '/inc/payment-integration.php';
+
+/**
+ * Admin configurations.
+ */
+require get_template_directory() . '/inc/admin-settings.php';
+
+/**
+ * Create required pages on theme activation
+ */
+function iplpro_create_pages() {
+    $pages = array(
+        'matches' => array(
+            'title' => 'IPL Matches',
+            'content' => '<!-- wp:shortcode -->[matches_list]<!-- /wp:shortcode -->',
+        ),
+        'select-seats' => array(
+            'title' => 'Select Seats',
+            'content' => '',
+        ),
+        'booking-summary' => array(
+            'title' => 'Booking Summary',
+            'content' => '',
+        ),
+        'payment' => array(
+            'title' => 'Payment',
+            'content' => '',
+        ),
+        'order-confirmation' => array(
+            'title' => 'Order Confirmation',
+            'content' => '',
+        ),
     );
-}
 
-// Calculate total with GST and service fee
-function iplpro_calculate_total($ticket_price, $qty = 1) {
-    // Base amount
-    $base_amount = $ticket_price * $qty;
-    
-    // GST (18%)
-    $gst_amount = $base_amount * 0.18;
-    
-    // Service fee (fixed ₹75)
-    $service_fee = 75;
-    
-    // Total
-    $total = $base_amount + $gst_amount + $service_fee;
-    
-    return array(
-        'base_amount' => $base_amount,
-        'gst_amount' => $gst_amount,
-        'service_fee' => $service_fee,
-        'total' => $total,
-    );
-}
+    foreach ($pages as $slug => $page) {
+        // Check if the page exists
+        $page_exists = get_page_by_path($slug);
 
-// Format price in Indian Rupees
-function iplpro_format_price($price) {
-    return '₹' . number_format($price, 2);
-}
-
-// AJAX handlers for booking process
-function iplpro_ajax_update_booking() {
-    // Check nonce
-    if (!isset($_POST['nonce']) || !wp_verify_nonce($_POST['nonce'], 'iplpro_booking_nonce')) {
-        wp_send_json_error(array('message' => 'Security check failed'));
-    }
-    
-    // Get booking data
-    $match_id = isset($_POST['match_id']) ? intval($_POST['match_id']) : 0;
-    $seat_type = isset($_POST['seat_type']) ? sanitize_text_field($_POST['seat_type']) : '';
-    $qty = isset($_POST['qty']) ? intval($_POST['qty']) : 1;
-    
-    // Validate data
-    if (!$match_id || !$seat_type) {
-        wp_send_json_error(array('message' => 'Invalid booking data'));
-    }
-    
-    // Get match details
-    $match = iplpro_get_match_details($match_id);
-    
-    if (!$match) {
-        wp_send_json_error(array('message' => 'Match not found'));
-    }
-    
-    // Find selected seat category
-    $selected_category = null;
-    foreach ($match['seat_categories'] as $category) {
-        if ($category['type'] === $seat_type) {
-            $selected_category = $category;
-            break;
+        // If the page doesn't exist, create it
+        if (!$page_exists) {
+            $page_id = wp_insert_post(array(
+                'post_title' => $page['title'],
+                'post_content' => $page['content'],
+                'post_status' => 'publish',
+                'post_type' => 'page',
+                'post_name' => $slug,
+            ));
         }
     }
-    
-    if (!$selected_category) {
-        wp_send_json_error(array('message' => 'Seat category not found'));
-    }
-    
-    // Check seat availability
-    if ($selected_category['seats_available'] < $qty) {
-        wp_send_json_error(array('message' => 'Not enough seats available'));
-    }
-    
-    // Calculate totals
-    $price_details = iplpro_calculate_total($selected_category['price'], $qty);
-    
-    // Store booking in session
-    $_SESSION['iplpro_booking'] = array(
-        'match_id' => $match_id,
-        'match' => $match,
-        'seat_type' => $seat_type,
-        'seat_category' => $selected_category,
-        'qty' => $qty,
-        'price_details' => $price_details,
-    );
-    
-    wp_send_json_success(array(
-        'message' => 'Booking updated',
-        'booking' => $_SESSION['iplpro_booking'],
-    ));
 }
-add_action('wp_ajax_iplpro_update_booking', 'iplpro_ajax_update_booking');
-add_action('wp_ajax_nopriv_iplpro_update_booking', 'iplpro_ajax_update_booking');
+add_action('after_switch_theme', 'iplpro_create_pages');
 
-// Start session for booking management
-function iplpro_start_session() {
-    if (!session_id()) {
-        session_start();
+/**
+ * Debug helper function - only in development
+ */
+function iplpro_debug($data) {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        echo '<pre>';
+        print_r($data);
+        echo '</pre>';
     }
 }
-add_action('init', 'iplpro_start_session');
+
+/**
+ * Fix for WP_Error handling in content-match.php
+ * As per client requirements
+ */
+function iplpro_get_term_name($term_id, $fallback = 'Team Name') {
+    $team = get_term($term_id);
+    if (!is_wp_error($team) && !empty($team)) {
+        return esc_html($team->name);
+    } else {
+        return $fallback;
+    }
+}
+
+/**
+ * Validate and sanitize UTR number
+ */
+function iplpro_validate_utr($utr) {
+    // Sanitize the UTR
+    $sanitized_utr = sanitize_text_field($utr);
+    
+    // Validate UTR pattern (alphanumeric, 12-22 characters)
+    if (preg_match('/^[a-zA-Z0-9]{12,22}$/', $sanitized_utr)) {
+        return $sanitized_utr;
+    }
+    
+    return false;
+}
