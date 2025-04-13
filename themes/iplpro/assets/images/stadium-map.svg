@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stadium outline -->
+  <path d="M150,300 C150,200 300,100 400,100 C500,100 650,200 650,300 C650,400 500,500 400,500 C300,500 150,400 150,300 Z" fill="#eaeaea" stroke="#333" stroke-width="2"/>
+  
+  <!-- Field -->
+  <ellipse cx="400" cy="300" rx="200" ry="120" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+  <ellipse cx="400" cy="300" rx="30" ry="30" fill="none" stroke="#fff" stroke-width="2"/>
+  
+  <!-- Section A - Premium -->
+  <path id="section-a" class="stadium-section" d="M150,300 C150,200 300,100 400,100 C500,100 650,200 650,300 L550,300 C550,250 450,200 400,200 C350,200 250,250 250,300 Z" fill="#ff9800" stroke="#333" stroke-width="1" data-section="Premium" data-price="4500"/>
+  <text x="400" y="170" text-anchor="middle" fill="#333" font-family="Arial" font-size="16" font-weight="bold">Premium</text>
+  
+  <!-- Section B - Corporate Box -->
+  <path id="section-b" class="stadium-section" d="M250,300 C250,250 350,200 400,200 C450,200 550,250 550,300 L500,300 C500,275 450,250 400,250 C350,250 300,275 300,300 Z" fill="#2196F3" stroke="#333" stroke-width="1" data-section="Corporate Box" data-price="8000"/>
+  <text x="400" y="235" text-anchor="middle" fill="#333" font-family="Arial" font-size="16" font-weight="bold">Corporate Box</text>
+  
+  <!-- Section C - General -->
+  <path id="section-c" class="stadium-section" d="M650,300 C650,400 500,500 400,500 C300,500 150,400 150,300 L250,300 C250,350 350,400 400,400 C450,400 550,350 550,300 Z" fill="#4CAF50" stroke="#333" stroke-width="1" data-section="General" data-price="2500"/>
+  <text x="400" y="430" text-anchor="middle" fill="#333" font-family="Arial" font-size="16" font-weight="bold">General</text>
+  
+  <!-- Legends -->
+  <rect x="50" y="520" width="20" height="20" fill="#ff9800" stroke="#333" stroke-width="1"/>
+  <text x="80" y="535" fill="#333" font-family="Arial" font-size="14">Premium (₹4,500)</text>
+  
+  <rect x="250" y="520" width="20" height="20" fill="#2196F3" stroke="#333" stroke-width="1"/>
+  <text x="280" y="535" fill="#333" font-family="Arial" font-size="14">Corporate Box (₹8,000)</text>
+  
+  <rect x="500" y="520" width="20" height="20" fill="#4CAF50" stroke="#333" stroke-width="1"/>
+  <text x="530" y="535" fill="#333" font-family="Arial" font-size="14">General (₹2,500)</text>
+  
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" fill="#333" font-family="Arial" font-size="24" font-weight="bold">Stadium Seating Map</text>
+  <text x="400" y="80" text-anchor="middle" fill="#333" font-family="Arial" font-size="16">Click on a section to select your seats</text>
+</svg>
