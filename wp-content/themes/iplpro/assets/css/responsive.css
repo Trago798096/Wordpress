@@ -1,0 +1,476 @@
+/**
+ * Responsive styles for IPL Pro theme
+ *
+ * @package iplpro
+ */
+
+/*--------------------------------------------------------------
+# Responsive Breakpoints
+--------------------------------------------------------------*/
+/* Extra small devices (phones, up to 575.98px) */
+/* Small devices (landscape phones, 576px and up) */
+/* Medium devices (tablets, 768px and up) */
+/* Large devices (desktops, 992px and up) */
+/* Extra large devices (large desktops, 1200px and up) */
+
+/*--------------------------------------------------------------
+# Mobile Menu (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .site-header {
+        position: relative;
+    }
+    
+    .header-container {
+        height: 60px;
+    }
+    
+    .menu-toggle {
+        display: block;
+        margin-left: auto;
+        margin-right: 15px;
+        background: none;
+        border: none;
+        padding: 10px;
+    }
+    
+    .main-navigation {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .main-navigation ul {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: var(--secondary-color);
+        z-index: 100;
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        padding: 0;
+    }
+    
+    .main-navigation.toggled ul {
+        display: flex;
+    }
+    
+    .main-navigation li {
+        margin-right: 0;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        width: 100%;
+    }
+    
+    .main-navigation li:last-child {
+        border-bottom: none;
+    }
+    
+    .main-navigation a {
+        padding: 15px 20px;
+    }
+    
+    .main-navigation .book-now-btn {
+        margin: 15px 20px;
+        width: calc(100% - 40px);
+    }
+    
+    .book-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .submenu-toggle {
+        display: block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 50px;
+        height: 50px;
+        background: none;
+        border: none;
+        color: var(--light-text);
+        font-size: 1.25rem;
+        z-index: 2;
+    }
+    
+    .submenu-toggle::after {
+        content: '+';
+    }
+    
+    .submenu-toggle.active::after {
+        content: '-';
+    }
+    
+    .main-navigation .sub-menu {
+        display: none;
+        position: static;
+        background-color: rgba(0, 0, 0, 0.1);
+        width: 100%;
+        box-shadow: none;
+    }
+    
+    .main-navigation .sub-menu.toggled {
+        display: block;
+    }
+    
+    .main-navigation .sub-menu li {
+        border-bottom: none;
+    }
+    
+    .main-navigation .sub-menu a {
+        padding-left: 30px;
+        width: 100%;
+    }
+}
+
+/*--------------------------------------------------------------
+# Hero Slider (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .hero-slider {
+        height: 300px;
+    }
+    
+    .slider-content h2 {
+        font-size: 1.75rem;
+    }
+    
+    .slider-content p {
+        font-size: 1rem;
+    }
+    
+    .hero-title {
+        font-size: 2em;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.2em;
+    }
+}
+
+/*--------------------------------------------------------------
+# Tournament Info (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .tournament-info {
+        padding: 15px;
+    }
+    
+    .tournament-header h2 {
+        font-size: 1.125rem;
+    }
+    
+    .tournament-meta {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .meta-date,
+    .meta-venue {
+        margin-bottom: 5px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Match Cards (up to 575.98px)
+--------------------------------------------------------------*/
+@media (max-width: 575.98px) {
+    .matches-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .match-teams {
+        flex-wrap: wrap;
+    }
+    
+    .match-teams .team {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .match-teams .match-vs {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Match Header (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .match-header-bar {
+        overflow-x: hidden;
+    }
+    
+    .match-header-container {
+        flex-direction: column;
+        padding: 10px;
+    }
+    
+    .back-link {
+        margin-bottom: 10px;
+    }
+    
+    .match-header-teams {
+        max-width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .match-header-details {
+        margin-bottom: 15px;
+    }
+    
+    .booking-steps {
+        margin-left: 0;
+        overflow-x: auto;
+        width: 100%;
+        justify-content: flex-start;
+        padding-bottom: 5px;
+    }
+    
+    .booking-step {
+        flex-shrink: 0;
+    }
+}
+
+/*--------------------------------------------------------------
+# Match Detail (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .match-detail-content {
+        padding: 15px 10px;
+    }
+    
+    .match-header {
+        padding: 15px;
+    }
+    
+    .match-teams {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .match-teams .team {
+        width: 100%;
+        margin-bottom: 15px;
+    }
+    
+    .match-teams .match-vs {
+        margin: 0 0 15px 0;
+    }
+    
+    .match-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .ticket-categories-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+/*--------------------------------------------------------------
+# Select Seats (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .select-seats-content {
+        padding: 15px 10px;
+    }
+    
+    .tab-nav {
+        flex-direction: column;
+        border-bottom: none;
+    }
+    
+    .tab-btn {
+        border-bottom: 1px solid var(--border-color);
+        text-align: center;
+    }
+    
+    .tab-btn.active {
+        border-bottom: 1px solid var(--primary-color);
+    }
+    
+    .tab-btn:last-child {
+        border-bottom: none;
+    }
+    
+    .ticket-types-container {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticket-type-options {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    }
+}
+
+/*--------------------------------------------------------------
+# Booking Summary (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .booking-summary-content {
+        padding: 15px 10px;
+    }
+    
+    .booking-summary h2,
+    .customer-info h2 {
+        font-size: 1.125rem;
+    }
+    
+    .summary-row,
+    .price-row {
+        font-size: 0.875rem;
+    }
+    
+    .total-row {
+        font-size: 1rem;
+    }
+}
+
+/*--------------------------------------------------------------
+# Payment (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .payment-content {
+        padding: 15px 10px;
+    }
+    
+    .payment-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .payment-header h1 {
+        margin-bottom: 5px;
+    }
+    
+    .payment-options-tabs .tabs-header {
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+    
+    .payment-options-tabs .tab-btn {
+        flex: none;
+        padding: 10px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .form-group.half {
+        width: 100%;
+    }
+    
+    .upi-app-icons {
+        flex-wrap: wrap;
+    }
+}
+
+/*--------------------------------------------------------------
+# Footer (up to 767.98px)
+--------------------------------------------------------------*/
+@media (max-width: 767.98px) {
+    .footer-partners {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .footer-menu ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/*--------------------------------------------------------------
+# Tablet Adjustments (768px to 991.98px)
+--------------------------------------------------------------*/
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .matches-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ticket-categories-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .footer-partners {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/*--------------------------------------------------------------
+# Large Screen Adjustments (992px and up)
+--------------------------------------------------------------*/
+@media (min-width: 992px) {
+    .match-detail-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas:
+            "header header"
+            "tickets tickets"
+            "details sidebar";
+    }
+    
+    .match-header {
+        grid-area: header;
+    }
+    
+    .match-ticket-categories {
+        grid-area: tickets;
+    }
+    
+    .match-details {
+        grid-area: details;
+        border-right: 1px solid var(--border-color);
+    }
+    
+    .stadium-info {
+        grid-area: sidebar;
+    }
+    
+    .select-seats-container {
+        grid-template-columns: 2fr 1fr;
+        align-items: start;
+    }
+}
+
+/*--------------------------------------------------------------
+# Print Styles
+--------------------------------------------------------------*/
+@media print {
+    .site-header,
+    .site-footer,
+    .booking-actions,
+    .form-actions {
+        display: none;
+    }
+    
+    .booking-summary-container,
+    .match-detail-container {
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+/*--------------------------------------------------------------
+# High Contrast Mode
+--------------------------------------------------------------*/
+@media (forced-colors: active) {
+    :root {
+        --primary-color: CanvasText;
+        --secondary-color: CanvasText;
+    }
+    
+    .book-btn,
+    .proceed-btn,
+    .payment-btn,
+    .continue-btn {
+        border: 1px solid CanvasText;
+    }
+}

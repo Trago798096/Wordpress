@@ -1,0 +1,234 @@
+/**
+ * Responsive styles for IPL Pro Theme
+ * 
+ * @package iplpro
+ */
+
+/* Tablet and smaller (max-width: 992px) */
+@media (max-width: 992px) {
+    .header-container {
+        padding: 10px 15px;
+    }
+    
+    .match-teams {
+        flex-direction: row;
+    }
+    
+    .team-logo {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .stadium-map {
+        max-width: 100%;
+    }
+    
+    .ticket-types-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    }
+    
+    .footer-partners {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .partner-item {
+        width: 30%;
+        min-width: 150px;
+    }
+}
+
+/* Mobile devices (max-width: 768px) */
+@media (max-width: 768px) {
+    .site-title {
+        font-size: 20px;
+    }
+    
+    .menu-toggle {
+        display: block;
+        position: relative;
+        width: 24px;
+        height: 18px;
+    }
+    
+    .menu-icon, 
+    .menu-icon:before, 
+    .menu-icon:after {
+        background-color: #1a2a47;
+        content: '';
+        display: block;
+        height: 2px;
+        position: absolute;
+        transition: all 0.2s ease-in-out;
+        width: 100%;
+    }
+    
+    .menu-icon {
+        top: 8px;
+    }
+    
+    .menu-icon:before {
+        top: -8px;
+    }
+    
+    .menu-icon:after {
+        top: 8px;
+    }
+    
+    #site-navigation {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background-color: #fff;
+        box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+    }
+    
+    #site-navigation.active {
+        max-height: 300px;
+    }
+    
+    #site-navigation ul {
+        flex-direction: column;
+        padding: 10px 20px;
+        margin-right: 0;
+        gap: 10px;
+    }
+    
+    .main-navigation {
+        gap: 15px;
+    }
+    
+    .match-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+    
+    .match-teams {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .team-info {
+        width: 100%;
+    }
+    
+    .versus {
+        margin: 10px 0;
+    }
+    
+    .booking-match-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .booking-label {
+        font-weight: 600;
+        margin-top: 10px;
+    }
+    
+    .payment-tabs {
+        flex-wrap: wrap;
+    }
+    
+    .payment-tab {
+        flex: 1 0 50%;
+        text-align: center;
+    }
+    
+    .footer-partners {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .partner-item {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .footer-menu ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+}
+
+/* Small mobile devices (max-width: 576px) */
+@media (max-width: 576px) {
+    .site-header {
+        padding: 5px 0;
+    }
+    
+    .header-container {
+        padding: 8px 10px;
+    }
+    
+    .book-btn {
+        padding: 6px 12px;
+        font-size: 14px;
+    }
+    
+    .match-card {
+        margin-bottom: 15px;
+    }
+    
+    .match-content {
+        padding: 15px;
+    }
+    
+    .team-logo {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .team-name {
+        font-size: 12px;
+    }
+    
+    .stadium-map-container {
+        padding: 15px;
+    }
+    
+    .ticket-types-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .booking-summary, 
+    .payment-section {
+        padding: 15px;
+    }
+    
+    .amount-row {
+        font-size: 14px;
+    }
+    
+    .total-row {
+        font-size: 16px;
+    }
+    
+    .form-label {
+        font-size: 14px;
+    }
+    
+    .form-input {
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+    
+    .form-submit-btn {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+    
+    .site-footer {
+        padding: 30px 0 15px;
+    }
+    
+    .footer-copyright {
+        font-size: 12px;
+    }
+}

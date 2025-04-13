@@ -1,0 +1,122 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <!-- Stadium Background -->
+  <rect x="0" y="0" width="800" height="600" fill="#f0f0f0" />
+  
+  <!-- Field -->
+  <ellipse cx="400" cy="300" rx="200" ry="120" fill="#8BC34A" stroke="#388E3C" stroke-width="2" />
+  <ellipse cx="400" cy="300" rx="190" ry="110" fill="#8BC34A" stroke="#fff" stroke-width="1" />
+  
+  <!-- Center Circle -->
+  <circle cx="400" cy="300" r="40" fill="#8BC34A" stroke="#fff" stroke-width="2" />
+  <circle cx="400" cy="300" r="2" fill="#fff" />
+  
+  <!-- Pitch Markings -->
+  <rect x="270" y="250" width="260" height="100" fill="none" stroke="#fff" stroke-width="1" />
+  <line x1="400" y1="250" x2="400" y2="350" stroke="#fff" stroke-width="1" />
+  
+  <!-- Stadium Sections -->
+  
+  <!-- North Stand (General) -->
+  <path d="M250,180 A200,120 0 0,1 550,180 L550,160 A220,140 0 0,0 250,160 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="North Stand General" />
+  
+  <!-- North-East Stand (General) -->
+  <path d="M550,180 A200,120 0 0,1 600,300 L620,300 A220,140 0 0,0 550,160 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="North-East Stand General" />
+  
+  <!-- East Stand (General) -->
+  <path d="M600,300 A200,120 0 0,1 550,420 L550,440 A220,140 0 0,0 620,300 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="East Stand General" />
+  
+  <!-- South-East Stand (General) -->
+  <path d="M550,420 A200,120 0 0,1 250,420 L250,440 A220,140 0 0,0 550,440 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="South Stand General" />
+  
+  <!-- South-West Stand (General) -->
+  <path d="M250,420 A200,120 0 0,1 200,300 L180,300 A220,140 0 0,0 250,440 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="South-West Stand General" />
+  
+  <!-- West Stand (General) -->
+  <path d="M200,300 A200,120 0 0,1 250,180 L250,160 A220,140 0 0,0 180,300 Z" 
+        fill="#90CAF9" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="West Stand General" />
+  
+  <!-- Premium Seating Areas -->
+  
+  <!-- North Premium -->
+  <path d="M300,200 A150,80 0 0,1 500,200 L500,190 A160,90 0 0,0 300,190 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="North Premium" />
+  
+  <!-- East Premium -->
+  <path d="M500,200 A150,80 0 0,1 550,300 L560,300 A160,90 0 0,0 500,190 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="East Premium" />
+  
+  <!-- South Premium -->
+  <path d="M550,300 A150,80 0 0,1 500,400 L500,410 A160,90 0 0,0 560,300 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="South Premium" />
+  
+  <!-- West Premium -->
+  <path d="M500,400 A150,80 0 0,1 300,400 L300,410 A160,90 0 0,0 500,410 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="South Premium" />
+  
+  <!-- North-West Premium -->
+  <path d="M300,400 A150,80 0 0,1 250,300 L240,300 A160,90 0 0,0 300,410 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="West Premium" />
+  
+  <!-- North-West Premium -->
+  <path d="M250,300 A150,80 0 0,1 300,200 L300,190 A160,90 0 0,0 240,300 Z" 
+        fill="#FFB74D" stroke="#333" stroke-width="1" 
+        class="section-path" data-section="North-West Premium" />
+  
+  <!-- VIP Areas -->
+  
+  <!-- North VIP Pavilion -->
+  <path d="M350,220 A100,60 0 0,1 450,220 L450,215 A105,65 0 0,0 350,215 Z" 
+        fill="#CE93D8" stroke="#333" stroke-width="1.5" 
+        class="section-path" data-section="North VIP Pavilion" />
+  
+  <!-- Corporate Boxes -->
+  
+  <!-- East Corporate Box -->
+  <path d="M500,250 A70,40 0 0,1 520,300 L525,300 A75,45 0 0,0 505,245 Z" 
+        fill="#FF8A65" stroke="#333" stroke-width="1.5" 
+        class="section-path" data-section="East Corporate Box" />
+  
+  <!-- West Corporate Box -->
+  <path d="M280,300 A70,40 0 0,1 300,250 L295,245 A75,45 0 0,0 275,300 Z" 
+        fill="#FF8A65" stroke="#333" stroke-width="1.5" 
+        class="section-path" data-section="West Corporate Box" />
+  
+  <!-- Legend -->
+  <g transform="translate(600, 460)">
+    <rect x="0" y="0" width="180" height="120" fill="#ffffff" stroke="#ccc" stroke-width="1" rx="5" ry="5" />
+    
+    <text x="10" y="20" font-size="14" font-weight="bold">LEGEND</text>
+    
+    <rect x="10" y="30" width="15" height="15" fill="#90CAF9" />
+    <text x="35" y="43" font-size="12">General Stand</text>
+    
+    <rect x="10" y="55" width="15" height="15" fill="#FFB74D" />
+    <text x="35" y="68" font-size="12">Premium Stand</text>
+    
+    <rect x="10" y="80" width="15" height="15" fill="#CE93D8" />
+    <text x="35" y="93" font-size="12">VIP Pavilion</text>
+    
+    <rect x="10" y="105" width="15" height="15" fill="#FF8A65" />
+    <text x="35" y="118" font-size="12">Corporate Box</text>
+  </g>
+  
+  <!-- Stadium Name -->
+  <text x="400" y="50" font-size="20" font-weight="bold" text-anchor="middle">BRSABV Cricket Stadium</text>
+  <text x="400" y="75" font-size="14" text-anchor="middle">Select a section to view available tickets</text>
+</svg>

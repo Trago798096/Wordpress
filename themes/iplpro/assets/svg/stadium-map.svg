@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="600" height="600" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Stadium Outline -->
+  <ellipse cx="300" cy="300" rx="280" ry="220" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+  
+  <!-- Cricket Pitch -->
+  <rect x="250" y="225" width="100" height="150" fill="#8bc34a" stroke="#4caf50" stroke-width="1"/>
+  <line x1="250" y1="300" x2="350" y2="300" stroke="#fff" stroke-width="2"/>
+  
+  <!-- North Stand - Pavilion -->
+  <path class="map-section" id="section-north" d="M250,100 Q300,80 350,100 L350,150 Q300,130 250,150 Z" fill="#f8bbd0" stroke="#333" stroke-width="1.5" data-section="Premium Blocks" data-price="1000"/>
+  <text x="300" y="125" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">North Pavilion</text>
+  
+  <!-- South Stand - Hospitality -->
+  <path class="map-section" id="section-south" d="M250,500 Q300,520 350,500 L350,450 Q300,470 250,450 Z" fill="#bbdefb" stroke="#333" stroke-width="1.5" data-section="Hospitality Box" data-price="1500"/>
+  <text x="300" y="490" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">South Hospitality</text>
+  
+  <!-- East Stand - General -->
+  <path class="map-section" id="section-east" d="M450,230 Q430,300 450,370 L400,370 Q380,300 400,230 Z" fill="#ffecb3" stroke="#333" stroke-width="1.5" data-section="General Stand" data-price="599"/>
+  <text x="425" y="300" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">East Stand</text>
+  
+  <!-- West Stand - Club House -->
+  <path class="map-section" id="section-west" d="M150,230 Q170,300 150,370 L200,370 Q220,300 200,230 Z" fill="#e1bee7" stroke="#333" stroke-width="1.5" data-section="Club House" data-price="950"/>
+  <text x="175" y="300" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">West Club House</text>
+  
+  <!-- Northeast Corner - VIP -->
+  <path class="map-section" id="section-northeast" d="M350,150 Q400,170 450,230 L400,230 Q380,200 350,190 Z" fill="#c5e1a5" stroke="#333" stroke-width="1.5" data-section="VIP Stand" data-price="1200"/>
+  <text x="390" y="190" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">NE VIP</text>
+  
+  <!-- Northwest Corner - VIP -->
+  <path class="map-section" id="section-northwest" d="M250,150 Q200,170 150,230 L200,230 Q220,200 250,190 Z" fill="#c5e1a5" stroke="#333" stroke-width="1.5" data-section="VIP Stand" data-price="1200"/>
+  <text x="210" y="190" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">NW VIP</text>
+  
+  <!-- Southeast Corner - Corporate -->
+  <path class="map-section" id="section-southeast" d="M350,450 Q400,430 450,370 L400,370 Q380,400 350,410 Z" fill="#a5d6a7" stroke="#333" stroke-width="1.5" data-section="Corporate Box" data-price="2500"/>
+  <text x="390" y="400" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">SE Corp.</text>
+  
+  <!-- Southwest Corner - Corporate -->
+  <path class="map-section" id="section-southwest" d="M250,450 Q200,430 150,370 L200,370 Q220,400 250,410 Z" fill="#a5d6a7" stroke="#333" stroke-width="1.5" data-section="Corporate Box" data-price="2500"/>
+  <text x="210" y="400" text-anchor="middle" font-size="12" font-family="Arial" fill="#333">SW Corp.</text>
+
+  <!-- Legend -->
+  <rect x="460" y="100" width="120" height="190" fill="white" stroke="#ccc" stroke-width="1" rx="5" ry="5"/>
+  <text x="520" y="120" text-anchor="middle" font-size="14" font-family="Arial" font-weight="bold" fill="#333">SECTIONS</text>
+  
+  <!-- Legend Items -->
+  <rect x="470" y="135" width="15" height="15" fill="#ffecb3"/>
+  <text x="495" y="148" font-size="12" font-family="Arial" fill="#333" text-anchor="start">General Stand</text>
+  
+  <rect x="470" y="160" width="15" height="15" fill="#f8bbd0"/>
+  <text x="495" y="173" font-size="12" font-family="Arial" fill="#333" text-anchor="start">Premium Blocks</text>
+  
+  <rect x="470" y="185" width="15" height="15" fill="#c5e1a5"/>
+  <text x="495" y="198" font-size="12" font-family="Arial" fill="#333" text-anchor="start">VIP Stand</text>
+  
+  <rect x="470" y="210" width="15" height="15" fill="#e1bee7"/>
+  <text x="495" y="223" font-size="12" font-family="Arial" fill="#333" text-anchor="start">Club House</text>
+  
+  <rect x="470" y="235" width="15" height="15" fill="#a5d6a7"/>
+  <text x="495" y="248" font-size="12" font-family="Arial" fill="#333" text-anchor="start">Corporate Box</text>
+  
+  <rect x="470" y="260" width="15" height="15" fill="#bbdefb"/>
+  <text x="495" y="273" font-size="12" font-family="Arial" fill="#333" text-anchor="start">Hospitality Box</text>
+</svg>
