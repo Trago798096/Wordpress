@@ -1,307 +1,346 @@
 <?php
 /**
- * Template Name: Payment
- *
- * This is the template for the payment page
+ * Template for displaying payment page
  *
  * @package iplpro
  */
 
-get_header();
-
-// Get booking details from query parameters
-$match_id = isset($_GET['match_id']) ? intval($_GET['match_id']) : 0;
-$seat_type = isset($_GET['seat_type']) ? sanitize_text_field($_GET['seat_type']) : '';
-$quantity = isset($_GET['quantity']) ? intval($_GET['quantity']) : 1;
-$total = isset($_GET['total']) ? floatval($_GET['total']) : 0;
-$fullname = isset($_GET['fullname']) ? sanitize_text_field($_GET['fullname']) : '';
-$email = isset($_GET['email']) ? sanitize_email($_GET['email']) : '';
-$phone = isset($_GET['phone']) ? sanitize_text_field($_GET['phone']) : '';
-
-// Get match details with error handling
-$match = iplpro_get_match_details($match_id);
-
-// If match is not found or data is invalid, redirect to matches page
-if (!$match || empty($seat_type) || $quantity < 1 || $total <= 0) {
-    wp_redirect(home_url('/matches'));
+// Check if we have order ID in query string or POST
+if (!isset($_GET['order_id']) && !isset($_POST['order_id'])) {
+    // If not, redirect to homepage
+    wp_redirect(home_url());
     exit;
 }
 
-// Check if customer information is provided
-if (empty($fullname) || empty($email) || empty($phone)) {
-    wp_redirect(add_query_arg(array(
-        'match_id' => $match_id,
-        'seat_type' => $seat_type,
-        'quantity' => $quantity,
-    ), home_url('/booking-summary')));
-    exit;
+// Get order ID
+$order_id = isset($_GET['order_id']) ? sanitize_text_field($_GET['order_id']) : sanitize_text_field($_POST['order_id']);
+
+// Check if payment was saved in session
+if (!session_id()) {
+    session_start();
 }
 
-// Find selected seat category
-$selected_category = null;
-foreach ($match['seat_categories'] as $category) {
-    if ($category['type'] === $seat_type) {
-        $selected_category = $category;
-        break;
+// Check for order in session
+if (isset($_SESSION['iplpro_order']) && $_SESSION['iplpro_order']['order_id'] === $order_id) {
+    $order_data = $_SESSION['iplpro_order'];
+} else {
+    // Try to get order from database
+    $order_posts = get_posts(array(
+        'post_type' => 'order',
+        'meta_key' => 'order_id',
+        'meta_value' => $order_id,
+        'posts_per_page' => 1
+    ));
+    
+    if (empty($order_posts)) {
+        wp_redirect(home_url());
+        exit;
     }
+    
+    $order_post_id = $order_posts[0]->ID;
+    
+    // Get order data
+    $order_data = array(
+        'order_id' => $order_id,
+        'order_post_id' => $order_post_id,
+        'match_title' => get_field('match_title', $order_post_id),
+        'ticket_type' => get_field('ticket_type', $order_post_id),
+        'quantity' => get_field('quantity', $order_post_id),
+        'price_per_ticket' => get_field('price_per_ticket', $order_post_id),
+        'total_amount' => get_field('total_amount', $order_post_id),
+        'customer_name' => get_field('customer_name', $order_post_id),
+        'customer_email' => get_field('customer_email', $order_post_id),
+        'customer_phone' => get_field('customer_phone', $order_post_id)
+    );
 }
 
-// If seat type is not found or not enough seats available, redirect
-if (!$selected_category || $selected_category['seats_available'] < $quantity) {
-    wp_redirect(home_url('/matches'));
-    exit;
-}
+// Check for payment error
+$payment_error = isset($_GET['payment_error']) ? urldecode($_GET['payment_error']) : '';
 
-// Calculate pricing to double-check (security measure)
-$price_details = iplpro_calculate_total($selected_category['price'], $quantity);
+// Generate Razorpay order if needed
+$razorpay_order_id = iplpro_generate_razorpay_order($order_id, $order_data['total_amount']);
 
-// Generate a transaction ID for reference
-$transaction_id = 'txn_' . substr(md5(uniqid(rand(), true)), 0, 16);
+// Calculate expiry time (15 minutes from now)
+$expiry_time = time() + (15 * 60);
+$minutes_remaining = 15;
 
-// Apply a discount for demo (10% off)
-$discount = round($price_details['total'] * 0.1, 2);
-$discounted_total = $price_details['total'] - $discount;
+get_header();
 ?>
 
-<div id="primary" class="content-area payment-content">
-    <main id="main" class="site-main">
-
-        <div class="payment-container">
+<main id="primary" class="site-main">
+    <div class="container">
+        <h1 class="payment-page-title"><?php echo esc_html__('Complete Your Payment', 'iplpro'); ?></h1>
+        
+        <div class="payment-options">
             <div class="payment-header">
-                <h1>IPL Tickets</h1>
-                <div class="payment-offer">
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                        <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z" fill="currentColor" />
-                    </svg>
-                    <span>Razorpay Trusted Business</span>
-                </div>
-            </div>
-            
-            <div class="payment-info">
-                <div class="payment-heading">
-                    <h2>UPI/QR: Pay with GPay & grab up to ₹400 instantly! 💰💸</h2>
+                <h2><?php echo esc_html__('Order Summary', 'iplpro'); ?></h2>
+                <div class="order-details">
+                    <p><strong><?php echo esc_html__('Order ID:', 'iplpro'); ?></strong> <?php echo esc_html($order_id); ?></p>
+                    <p><strong><?php echo esc_html__('Match:', 'iplpro'); ?></strong> <?php echo esc_html($order_data['match_title']); ?></p>
+                    <p><strong><?php echo esc_html__('Tickets:', 'iplpro'); ?></strong> <?php echo esc_html($order_data['quantity']) . ' x ' . esc_html($order_data['ticket_type']); ?></p>
+                    <p><strong><?php echo esc_html__('Total Amount:', 'iplpro'); ?></strong> ₹<?php echo esc_html(number_format($order_data['total_amount'])); ?></p>
                 </div>
                 
-                <div class="payment-options-tabs">
-                    <div class="tabs-header">
-                        <button class="tab-btn active" data-tab="upi">
-                            <svg viewBox="0 0 24 24" width="20" height="20">
-                                <path d="M17,18C15.89,18 15,18.89 15,20A2,2 0 0,0 17,22A2,2 0 0,0 19,20C19,18.89 18.1,18 17,18M1,2V4H3L6.6,11.59L5.24,14.04C5.09,14.32 5,14.65 5,15A2,2 0 0,0 7,17H19V15H7.42A0.25,0.25 0 0,1 7.17,14.75C7.17,14.7 7.18,14.66 7.2,14.63L8.1,13H15.55C16.3,13 16.96,12.58 17.3,11.97L20.88,5.5C20.95,5.34 21,5.17 21,5A1,1 0 0,0 20,4H5.21L4.27,2M7,18C5.89,18 5,18.89 5,20A2,2 0 0,0 7,22A2,2 0 0,0 9,20C9,18.89 8.1,18 7,18Z" fill="currentColor" />
-                            </svg>
-                            UPI/QR
-                            <span class="payment-icons">♦ 🔵 💎 🔹</span>
-                        </button>
-                        <button class="tab-btn" data-tab="cards">
-                            <svg viewBox="0 0 24 24" width="20" height="20">
-                                <path d="M20,8H4V6H20M20,18H4V12H20M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z" fill="currentColor" />
-                            </svg>
-                            Cards
-                            <span class="card-icons">💳 💳 💳</span>
-                        </button>
-                        <button class="tab-btn" data-tab="wallets">
-                            <svg viewBox="0 0 24 24" width="20" height="20">
-                                <path d="M21,18V19A2,2 0 0,1 19,21H5C3.89,21 3,20.1 3,19V5A2,2 0 0,1 5,3H19A2,2 0 0,1 21,5V6H12C10.89,6 10,6.9 10,8V16A2,2 0 0,0 12,18M12,16H22V8H12M16,13.5A1.5,1.5 0 0,1 14.5,12A1.5,1.5 0 0,1 16,10.5A1.5,1.5 0 0,1 17.5,12A1.5,1.5 0 0,1 16,13.5Z" fill="currentColor" />
-                            </svg>
-                            Wallet
-                            <span class="wallet-icons">🔵 💎 🔹</span>
+                <div class="time-remaining">
+                    <span class="dashicons dashicons-clock"></span>
+                    <span class="timer-text"><?php echo esc_html__('Time Remaining:', 'iplpro'); ?> <span id="countdown"><?php echo esc_html($minutes_remaining); ?>:00</span></span>
+                </div>
+                
+                <?php if (!empty($payment_error)): ?>
+                <div class="payment-error">
+                    <p><?php echo esc_html($payment_error); ?></p>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="payment-tabs">
+                <div class="payment-tab active" data-tab="upi"><?php echo esc_html__('UPI Payment', 'iplpro'); ?></div>
+                <div class="payment-tab" data-tab="card"><?php echo esc_html__('Credit/Debit Card', 'iplpro'); ?></div>
+                <div class="payment-tab" data-tab="bank"><?php echo esc_html__('Net Banking', 'iplpro'); ?></div>
+            </div>
+            
+            <div class="tab-pane active" id="upi-tab">
+                <div class="upi-payment">
+                    <div class="qr-code-container">
+                        <h4><?php echo esc_html__('Scan QR Code', 'iplpro'); ?></h4>
+                        <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/upi-qr.png'); ?>" alt="<?php echo esc_attr__('UPI QR Code', 'iplpro'); ?>" class="qr-code-image">
+                    </div>
+                    
+                    <div class="upi-id-container">
+                        <h4><?php echo esc_html__('or Pay using UPI ID', 'iplpro'); ?></h4>
+                        <div class="upi-id">ipl@ybl</div>
+                        <button class="copy-btn" data-clipboard-text="ipl@ybl">
+                            <span class="dashicons dashicons-clipboard"></span>
+                            <?php echo esc_html__('Copy', 'iplpro'); ?>
                         </button>
                     </div>
                     
-                    <div class="tabs-content">
-                        <div class="tab-pane active" id="upi-tab">
-                            <div class="upi-content">
-                                <div class="upi-info">
-                                    <p>Pay using any UPI App to make your order success ✓</p>
-                                </div>
-                                
-                                <div class="qr-code">
-                                    <svg viewBox="0 0 200 200" width="150" height="150">
-                                        <!-- QR Code SVG representation -->
-                                        <rect x="0" y="0" width="200" height="200" fill="#ffffff" />
-                                        <g fill="#000000">
-                                            <!-- Create a grid pattern that resembles a QR code -->
-                                            <?php 
-                                            // Generate a realistic QR code pattern
-                                            for ($i = 0; $i < 8; $i++) {
-                                                for ($j = 0; $j < 8; $j++) {
-                                                    if (rand(0, 1) || ($i < 2 && $j < 2) || ($i < 2 && $j > 5) || ($i > 5 && $j < 2)) {
-                                                        $x = $i * 20 + 10;
-                                                        $y = $j * 20 + 10;
-                                                        echo '<rect x="' . $x . '" y="' . $y . '" width="20" height="20" />';
-                                                    }
-                                                }
-                                            }
-                                            // Add QR finder patterns
-                                            echo '<rect x="10" y="10" width="60" height="60" />';
-                                            echo '<rect x="20" y="20" width="40" height="40" fill="#ffffff" />';
-                                            echo '<rect x="30" y="30" width="20" height="20" />';
-                                            
-                                            echo '<rect x="130" y="10" width="60" height="60" />';
-                                            echo '<rect x="140" y="20" width="40" height="40" fill="#ffffff" />';
-                                            echo '<rect x="150" y="30" width="20" height="20" />';
-                                            
-                                            echo '<rect x="10" y="130" width="60" height="60" />';
-                                            echo '<rect x="20" y="140" width="40" height="40" fill="#ffffff" />';
-                                            echo '<rect x="30" y="150" width="20" height="20" />';
-                                            ?>
-                                        </g>
-                                    </svg>
-                                </div>
-                                
-                                <div class="upi-details">
-                                    <p>Scan QR code to pay</p>
-                                    <p class="upi-instruction">Scan the QR using any UPI App</p>
-                                    
-                                    <div class="transaction-details">
-                                        <div class="transaction-id">
-                                            <span>Pay using any upi to make your order success ✓</span>
-                                            <div class="txn-id">
-                                                <span><?php echo esc_html($transaction_id); ?></span>
-                                                <button class="copy-btn">Copy</button>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="amount-details">
-                                            <div class="amount-row">
-                                                <span>Amount to be Paid</span>
-                                                <span class="amount-value"><?php echo iplpro_format_price($discounted_total); ?></span>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="utr-input">
-                                            <label for="utr-number">UTR No/Transaction Number</label>
-                                            <input type="text" id="utr-number" placeholder="Enter 12-digit UTR number">
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="upi-app-icons">
-                                    <div class="upi-app">
-                                        <svg viewBox="0 0 24 24" width="40" height="40" class="phonepe">
-                                            <circle cx="12" cy="12" r="12" fill="#5f259f" />
-                                            <path d="M14,10.7V13.7C14,14.4 13.4,15 12.7,15H9.8V19H7V7H12.7C13.4,7 14,7.6 14,8.3V10.7M12,9H9.8V13H12V9Z" fill="#ffffff" />
-                                        </svg>
-                                        <span>PhonePe</span>
-                                    </div>
-                                    
-                                    <div class="upi-app">
-                                        <svg viewBox="0 0 24 24" width="40" height="40" class="paytm">
-                                            <rect width="24" height="24" fill="#00baf2" />
-                                            <path d="M7,7V17H9V13H11V17H13V7H11V11H9V7H7Z" fill="#ffffff" />
-                                            <path d="M15,7V17H17V7H15Z" fill="#ffffff" />
-                                        </svg>
-                                        <span>PayTM</span>
-                                    </div>
-                                    
-                                    <div class="upi-app">
-                                        <svg viewBox="0 0 24 24" width="40" height="40" class="bhim">
-                                            <rect width="24" height="24" fill="#00a0e4" />
-                                            <path d="M6,6H18V10H6V6M6,11H18V18H6V11Z" fill="#ffffff" />
-                                        </svg>
-                                        <span>BHIM</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="upi-app-buttons">
+                        <a href="#" class="upi-app-button">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/gpay.png'); ?>" alt="Google Pay" class="app-icon">
+                            <span class="app-name">Google Pay</span>
+                        </a>
                         
-                        <div class="tab-pane" id="cards-tab">
-                            <div class="cards-content">
-                                <div class="card-form">
-                                    <div class="form-group">
-                                        <label for="card-number">Card Number</label>
-                                        <input type="text" id="card-number" placeholder="1234 5678 9012 3456" maxlength="19">
-                                    </div>
-                                    
-                                    <div class="form-row">
-                                        <div class="form-group half">
-                                            <label for="expiry-date">Expiry Date</label>
-                                            <input type="text" id="expiry-date" placeholder="MM/YY" maxlength="5">
-                                        </div>
-                                        
-                                        <div class="form-group half">
-                                            <label for="cvv">CVV</label>
-                                            <input type="text" id="cvv" placeholder="123" maxlength="3">
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="card-name">Name on Card</label>
-                                        <input type="text" id="card-name" placeholder="John Doe">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <a href="#" class="upi-app-button">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/phonepe.png'); ?>" alt="PhonePe" class="app-icon">
+                            <span class="app-name">PhonePe</span>
+                        </a>
                         
-                        <div class="tab-pane" id="wallets-tab">
-                            <div class="wallets-content">
-                                <div class="wallet-options">
-                                    <div class="wallet-option">
-                                        <div class="wallet-icon">
-                                            <svg viewBox="0 0 24 24" width="24" height="24">
-                                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M12,6.5A5.5,5.5 0 0,1 17.5,12A5.5,5.5 0 0,1 12,17.5A5.5,5.5 0 0,1 6.5,12A5.5,5.5 0 0,1 12,6.5M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9Z" fill="#0080ff" />
-                                            </svg>
-                                        </div>
-                                        <span class="wallet-name">Amazon Pay</span>
-                                        <svg viewBox="0 0 24 24" width="16" height="16" class="chevron">
-                                            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="currentColor" />
-                                        </svg>
-                                    </div>
-                                    
-                                    <div class="wallet-option">
-                                        <div class="wallet-icon">
-                                            <svg viewBox="0 0 24 24" width="24" height="24">
-                                                <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2M12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4M11,17H13V11H11V17Z" fill="#5f259f" />
-                                                <path d="M11,9H13V7H11V9Z" fill="#5f259f" />
-                                            </svg>
-                                        </div>
-                                        <span class="wallet-name">PhonePe Wallet</span>
-                                        <svg viewBox="0 0 24 24" width="16" height="16" class="chevron">
-                                            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="currentColor" />
-                                        </svg>
-                                    </div>
-                                    
-                                    <div class="wallet-option">
-                                        <div class="wallet-icon">
-                                            <svg viewBox="0 0 24 24" width="24" height="24">
-                                                <path d="M19,13H5V11H19V13M12,5A2,2 0 0,1 14,7A2,2 0 0,1 12,9A2,2 0 0,1 10,7A2,2 0 0,1 12,5M12,11A4,4 0 0,0 16,7A4,4 0 0,0 12,3A4,4 0 0,0 8,7A4,4 0 0,0 12,11M12,13C7.58,13 4,15.79 4,19V21H20V19C20,15.79 16.42,13 12,13Z" fill="#ff0057" />
-                                            </svg>
-                                        </div>
-                                        <span class="wallet-name">MobiKwik</span>
-                                        <svg viewBox="0 0 24 24" width="16" height="16" class="chevron">
-                                            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="currentColor" />
-                                        </svg>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <a href="#" class="upi-app-button">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/paytm.png'); ?>" alt="Paytm" class="app-icon">
+                            <span class="app-name">Paytm</span>
+                        </a>
                     </div>
-                </div>
-                
-                <div class="netbanking-section">
-                    <button class="netbanking-btn">
-                        <svg viewBox="0 0 24 24" width="20" height="20">
-                            <path d="M6.5,10H4.5V17H6.5V10M12.5,10H10.5V17H12.5V10M21,19H2V21H21V19M18.5,10H16.5V17H18.5V10M11.5,3.26L16.71,6H6.29L11.5,3.26M11.5,1L2,6V8H21V6L11.5,1Z" fill="currentColor" />
-                        </svg>
-                        IMPS/NEFT
-                        <svg viewBox="0 0 24 24" width="16" height="16" class="chevron">
-                            <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" fill="currentColor" />
-                        </svg>
-                    </button>
+                    
+                    <div class="order-reference">
+                        <div class="reference-label"><?php echo esc_html__('Use this Reference ID for payment', 'iplpro'); ?></div>
+                        <div class="reference-value"><?php echo esc_html($order_id); ?></div>
+                    </div>
+                    
+                    <form action="" method="post" class="utr-form">
+                        <div class="form-instructions">
+                            <?php echo esc_html__('After completing the payment, please enter the UTR Number / Transaction ID below for verification.', 'iplpro'); ?>
+                        </div>
+                        
+                        <div class="utr-field">
+                            <label for="utr_number"><?php echo esc_html__('UTR Number / Transaction ID', 'iplpro'); ?></label>
+                            <input type="text" name="utr_number" id="utr_number" required>
+                        </div>
+                        
+                        <input type="hidden" name="order_id" value="<?php echo esc_attr($order_id); ?>">
+                        <input type="hidden" name="payment_method" value="upi">
+                        
+                        <button type="submit" class="utr-submit-btn"><?php echo esc_html__('Submit UTR Number', 'iplpro'); ?></button>
+                    </form>
                 </div>
             </div>
             
-            <div class="payment-summary">
-                <div class="summary-header">
-                    <span class="summary-title">₹<?php echo number_format($price_details['total'], 2); ?></span>
-                    <span class="discount">₹<?php echo number_format($discounted_total, 2); ?>(₹<?php echo number_format($discount, 2); ?> off)</span>
+            <div class="tab-pane" id="card-tab">
+                <div class="card-payment">
+                    <div class="razorpay-container">
+                        <h4><?php echo esc_html__('Pay with Credit/Debit Card', 'iplpro'); ?></h4>
+                        
+                        <div class="razorpay-button-container">
+                            <button class="razorpay-btn" id="razorpay-button">
+                                <?php echo esc_html__('Pay Now', 'iplpro'); ?> ₹<?php echo esc_html(number_format($order_data['total_amount'])); ?>
+                            </button>
+                        </div>
+                        
+                        <div class="card-logos">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/visa.png'); ?>" alt="Visa" class="card-logo">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/mastercard.png'); ?>" alt="Mastercard" class="card-logo">
+                            <img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/rupay.png'); ?>" alt="RuPay" class="card-logo">
+                        </div>
+                    </div>
                 </div>
-                
-                <button class="continue-btn">Continue</button>
+            </div>
+            
+            <div class="tab-pane" id="bank-tab">
+                <div class="bank-payment">
+                    <h4><?php echo esc_html__('Bank Transfer Details', 'iplpro'); ?></h4>
+                    
+                    <div class="bank-details">
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label"><?php echo esc_html__('Account Name:', 'iplpro'); ?></span>
+                            <span class="bank-detail-value">IPL Tickets Pvt Ltd</span>
+                        </div>
+                        
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label"><?php echo esc_html__('Account Number:', 'iplpro'); ?></span>
+                            <span class="bank-detail-value">1234 5678 9012 3456</span>
+                        </div>
+                        
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label"><?php echo esc_html__('IFSC Code:', 'iplpro'); ?></span>
+                            <span class="bank-detail-value">HDFC0001234</span>
+                        </div>
+                        
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label"><?php echo esc_html__('Bank:', 'iplpro'); ?></span>
+                            <span class="bank-detail-value">HDFC Bank</span>
+                        </div>
+                        
+                        <div class="bank-detail-item">
+                            <span class="bank-detail-label"><?php echo esc_html__('Branch:', 'iplpro'); ?></span>
+                            <span class="bank-detail-value">Mumbai Main Branch</span>
+                        </div>
+                    </div>
+                    
+                    <div class="order-reference">
+                        <div class="reference-label"><?php echo esc_html__('Use this Reference ID for payment', 'iplpro'); ?></div>
+                        <div class="reference-value"><?php echo esc_html($order_id); ?></div>
+                    </div>
+                    
+                    <form action="" method="post" class="bank-form">
+                        <div class="form-instructions">
+                            <?php echo esc_html__('After completing the bank transfer, please enter the transaction reference number below for verification.', 'iplpro'); ?>
+                        </div>
+                        
+                        <div class="utr-field">
+                            <label for="transfer_reference"><?php echo esc_html__('Transaction Reference', 'iplpro'); ?></label>
+                            <input type="text" name="transfer_reference" id="transfer_reference" required>
+                        </div>
+                        
+                        <input type="hidden" name="order_id" value="<?php echo esc_attr($order_id); ?>">
+                        <input type="hidden" name="payment_method" value="bank_transfer">
+                        
+                        <button type="submit" class="utr-submit-btn"><?php echo esc_html__('Submit Reference', 'iplpro'); ?></button>
+                    </form>
+                </div>
             </div>
         </div>
+        
+        <div class="payment-notice">
+            <p><?php echo esc_html__('Note: Please complete the payment within 15 minutes. After this time, your booking will be cancelled.', 'iplpro'); ?></p>
+            <p><a href="javascript:history.back();" class="back-btn"><?php echo esc_html__('Back to Booking Summary', 'iplpro'); ?></a></p>
+        </div>
+    </div>
+</main>
 
-    </main><!-- #main -->
-</div><!-- #primary -->
+<!-- Razorpay Integration -->
+<form id="razorpay-hidden-form" action="" method="post">
+    <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+    <input type="hidden" name="order_id" value="<?php echo esc_attr($order_id); ?>">
+    <input type="hidden" name="payment_method" value="razorpay">
+</form>
+
+<script>
+    // Countdown timer
+    document.addEventListener('DOMContentLoaded', function() {
+        var countdownElement = document.getElementById('countdown');
+        var minutes = <?php echo esc_js($minutes_remaining); ?>;
+        var seconds = 0;
+        
+        var countdownInterval = setInterval(function() {
+            seconds--;
+            
+            if (seconds < 0) {
+                minutes--;
+                seconds = 59;
+            }
+            
+            if (minutes < 0) {
+                clearInterval(countdownInterval);
+                window.location.href = '<?php echo esc_url(home_url()); ?>';
+                return;
+            }
+            
+            countdownElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        }, 1000);
+        
+        // Payment tabs
+        var tabs = document.querySelectorAll('.payment-tab');
+        var panes = document.querySelectorAll('.tab-pane');
+        
+        tabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+                var tabId = this.getAttribute('data-tab');
+                
+                tabs.forEach(function(t) {
+                    t.classList.remove('active');
+                });
+                
+                panes.forEach(function(pane) {
+                    pane.classList.remove('active');
+                });
+                
+                this.classList.add('active');
+                document.getElementById(tabId + '-tab').classList.add('active');
+            });
+        });
+        
+        // Copy to clipboard
+        var copyBtn = document.querySelector('.copy-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', function() {
+                var text = this.getAttribute('data-clipboard-text');
+                var tempInput = document.createElement('input');
+                tempInput.value = text;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                
+                var originalText = this.innerHTML;
+                this.innerHTML = '<span class="dashicons dashicons-yes"></span> Copied!';
+                
+                setTimeout(function() {
+                    copyBtn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+        
+        // Razorpay integration
+        var razorpayBtn = document.getElementById('razorpay-button');
+        if (razorpayBtn) {
+            razorpayBtn.addEventListener('click', function() {
+                var options = {
+                    key: 'rzp_test_your_key_here', // Replace with your key
+                    amount: <?php echo esc_js($order_data['total_amount'] * 100); ?>, // Amount in paise
+                    currency: 'INR',
+                    name: 'IPL Tickets',
+                    description: '<?php echo esc_js($order_data['match_title']); ?>',
+                    order_id: '<?php echo esc_js($razorpay_order_id); ?>',
+                    handler: function(response) {
+                        document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+                        document.getElementById('razorpay-hidden-form').submit();
+                    },
+                    prefill: {
+                        name: '<?php echo esc_js($order_data['customer_name']); ?>',
+                        email: '<?php echo esc_js($order_data['customer_email']); ?>',
+                        contact: '<?php echo esc_js($order_data['customer_phone']); ?>'
+                    },
+                    theme: {
+                        color: '#FF4F00'
+                    }
+                };
+                
+                var rzp = new Razorpay(options);
+                rzp.open();
+            });
+        }
+    });
+</script>
 
 <?php
 get_footer();
