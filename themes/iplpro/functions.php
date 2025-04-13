@@ -218,6 +218,7 @@ require get_template_directory() . '/inc/template-tags.php';
 require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/shortcodes.php';
 require get_template_directory() . '/inc/payment-integration.php';
+require get_template_directory() . '/inc/demo-data.php';
 
 // Load ACF fields if ACF plugin is active
 if (class_exists('ACF')) {
