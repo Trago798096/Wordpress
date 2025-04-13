@@ -5,9 +5,14 @@
  * @package iplpro
  */
 
-(function($) {
+(function() {
     'use strict';
-    
+
+    // Document ready
+    document.addEventListener('DOMContentLoaded', function() {
+        initBooking();
+    });
+
     /**
      * Initialize booking functionality
      */
@@ -15,49 +20,46 @@
         setupFormValidation();
         handlePaymentProcess();
         setupBackNavigation();
+        setupStadiumSelection();
     }
-    
+
     /**
      * Setup form validation for booking forms
      */
     function setupFormValidation() {
-        const $customerInfoForm = $('#customer-info-form');
+        const bookingForm = document.querySelector('.booking-form');
         
-        if ($customerInfoForm.length === 0) {
-            return;
-        }
+        if (!bookingForm) return;
         
-        $customerInfoForm.on('submit', function(e) {
-            const $fullname = $('#fullname');
-            const $email = $('#email');
-            const $phone = $('#phone');
-            
+        bookingForm.addEventListener('submit', function(e) {
             let isValid = true;
+            const requiredFields = bookingForm.querySelectorAll('input[required], select[required], textarea[required]');
             
-            // Validate fullname
-            if ($fullname.val().trim() === '') {
-                showError($fullname, 'Please enter your full name');
-                isValid = false;
-            } else {
-                removeError($fullname);
-            }
+            // Clear previous errors
+            bookingForm.querySelectorAll('.error-message').forEach(el => el.remove());
             
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if ($email.val().trim() === '' || !emailRegex.test($email.val().trim())) {
-                showError($email, 'Please enter a valid email address');
-                isValid = false;
-            } else {
-                removeError($email);
-            }
+            // Validate each required field
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    showError(field, 'This field is required');
+                } else if (field.type === 'email' && !validateEmail(field.value)) {
+                    isValid = false;
+                    showError(field, 'Please enter a valid email address');
+                } else if (field.name === 'customer_phone' && !validatePhone(field.value)) {
+                    isValid = false;
+                    showError(field, 'Please enter a valid phone number');
+                }
+            });
             
-            // Validate phone
-            const phoneRegex = /^[0-9]{10}$/;
-            if ($phone.val().trim() === '' || !phoneRegex.test($phone.val().trim())) {
-                showError($phone, 'Please enter a valid 10-digit phone number');
+            // Check if ticket type is selected
+            const ticketTypeField = bookingForm.querySelector('input[name="ticket_type"]');
+            if (ticketTypeField && !ticketTypeField.value) {
                 isValid = false;
-            } else {
-                removeError($phone);
+                const ticketSection = bookingForm.querySelector('.ticket-selection');
+                if (ticketSection) {
+                    showError(ticketSection, 'Please select a ticket type');
+                }
             }
             
             if (!isValid) {
@@ -65,249 +67,213 @@
             }
         });
         
-        function showError($element, message) {
-            // Remove any existing error
-            removeError($element);
-            
-            // Add error class and message
-            $element.addClass('error');
-            $element.after('<span class="error-message">' + message + '</span>');
+        // Email validation function
+        function validateEmail(email) {
+            const re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
         }
         
-        function removeError($element) {
-            $element.removeClass('error');
-            $element.next('.error-message').remove();
+        // Phone validation function
+        function validatePhone(phone) {
+            const re = /^[\d\+\-\(\) ]{8,15}$/;
+            return re.test(String(phone));
+        }
+        
+        // Show error message function
+        function showError(element, message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            
+            if (element.parentNode.classList.contains('form-field')) {
+                element.parentNode.appendChild(errorDiv);
+            } else {
+                element.parentNode.insertBefore(errorDiv, element.nextSibling);
+            }
+            
+            element.classList.add('error');
+            
+            // Remove error on input
+            element.addEventListener('input', function() {
+                removeError(element);
+            });
+        }
+        
+        // Remove error message function
+        function removeError(element) {
+            const errorDiv = element.parentNode.querySelector('.error-message');
+            if (errorDiv) {
+                errorDiv.remove();
+            }
+            element.classList.remove('error');
         }
     }
-    
+
     /**
      * Handle Razorpay payment integration
      */
     function handlePaymentProcess() {
-        const $paymentBtn = $('.payment-btn');
-        const $payNowBtn = $('.continue-btn');
+        const utrForm = document.querySelector('.utr-form');
         
-        if ($paymentBtn.length) {
-            $paymentBtn.on('click', function(e) {
+        if (!utrForm) return;
+        
+        utrForm.addEventListener('submit', function(e) {
+            // Validate UTR number
+            const utrField = document.getElementById('utr_number');
+            if (utrField && !validateUTR(utrField.value)) {
                 e.preventDefault();
-                
-                const $form = $(this).closest('form');
-                const formValid = validateForm($form);
-                
-                if (!formValid) {
-                    return;
-                }
-                
-                // Collect booking data
-                const bookingData = {
-                    match_id: $form.find('input[name="match_id"]').val(),
-                    seat_type: $form.find('input[name="seat_type"]').val(),
-                    quantity: $form.find('input[name="quantity"]').val(),
-                    total: $form.find('input[name="total"]').val(),
-                    fullname: $form.find('input[name="fullname"]').val(),
-                    email: $form.find('input[name="email"]').val(),
-                    phone: $form.find('input[name="phone"]').val(),
-                    nonce: iplpro_booking.nonce,
-                    action: 'iplpro_create_razorpay_payment'
-                };
-                
-                // Show loading state
-                $(this).prop('disabled', true).text('Processing...');
-                
-                // Make AJAX request to create Razorpay order
-                $.ajax({
-                    url: iplpro_booking.ajax_url,
-                    type: 'POST',
-                    data: bookingData,
-                    success: function(response) {
-                        if (response.success) {
-                            // Redirect to payment page
-                            window.location.href = addQueryParams(
-                                window.location.origin + '/payment',
-                                bookingData
-                            );
-                        } else {
-                            showPaymentError(response.data.message || 'An error occurred. Please try again.');
-                            $paymentBtn.prop('disabled', false).text('Pay with Razorpay ₹' + bookingData.total);
-                        }
-                    },
-                    error: function() {
-                        showPaymentError('Network error. Please check your connection and try again.');
-                        $paymentBtn.prop('disabled', false).text('Pay with Razorpay ₹' + bookingData.total);
-                    }
-                });
-            });
-        }
-        
-        if ($payNowBtn.length) {
-            $payNowBtn.on('click', function() {
-                // Simulate successful payment (in a real scenario, this would handle actual payment)
-                const utrNumber = $('#utr-number').val();
-                
-                if (utrNumber && utrNumber.length >= 10) {
-                    // If UTR number is provided, proceed with payment confirmation
-                    const paymentData = getPaymentDataFromURL();
-                    completePayment(paymentData, utrNumber);
-                } else if ($('#card-number').val() && $('#card-number').val().length >= 16) {
-                    // If card details are provided
-                    const paymentData = getPaymentDataFromURL();
-                    completePayment(paymentData, 'card_' + Math.random().toString(36).substring(2, 10));
-                } else {
-                    // Show error if no payment method details provided
-                    alert('Please provide payment details to continue');
-                }
-            });
-        }
-        
-        function validateForm($form) {
-            let isValid = true;
-            
-            $form.find('input[required]').each(function() {
-                if ($(this).val().trim() === '') {
-                    isValid = false;
-                    $(this).addClass('error');
-                } else {
-                    $(this).removeClass('error');
-                }
-            });
-            
-            return isValid;
-        }
-        
-        function showPaymentError(message) {
-            if ($('.payment-error').length === 0) {
-                $('<div class="payment-error"></div>').insertBefore($paymentBtn);
+                showPaymentError('Please enter a valid UTR number (12-22 characters)');
+                utrField.focus();
             }
-            
-            $('.payment-error').html('<p>' + message + '</p>');
+        });
+        
+        // UTR validation function
+        function validateUTR(utr) {
+            return /^[a-zA-Z0-9]{12,22}$/.test(utr);
         }
         
-        function addQueryParams(url, params) {
-            const urlObj = new URL(url);
+        // Show payment error function
+        function showPaymentError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
             
-            Object.keys(params).forEach(key => {
-                if (key !== 'action' && key !== 'nonce') {
-                    urlObj.searchParams.set(key, params[key]);
+            const utrField = document.getElementById('utr_number');
+            if (utrField && utrField.parentNode) {
+                if (utrField.parentNode.querySelector('.error-message')) {
+                    utrField.parentNode.querySelector('.error-message').remove();
+                }
+                utrField.parentNode.appendChild(errorDiv);
+            }
+        }
+        
+        // Handle app redirect buttons
+        const appButtons = document.querySelectorAll('.upi-app-button');
+        
+        appButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                // Store payment attempt information
+                const orderId = new URLSearchParams(window.location.search).get('order_id');
+                if (orderId) {
+                    localStorage.setItem('payment_initiated', orderId);
+                    localStorage.setItem('payment_time', new Date().toISOString());
                 }
             });
-            
+        });
+        
+        // Check for URL params when returning from payment app
+        window.addEventListener('load', function() {
+            const paymentData = getPaymentDataFromURL();
+            if (paymentData) {
+                completePayment(paymentData);
+            }
+        });
+        
+        // Add query parameters to URL 
+        function addQueryParams(url, params) {
+            const urlObj = new URL(url, window.location.origin);
+            Object.keys(params).forEach(key => {
+                urlObj.searchParams.append(key, params[key]);
+            });
             return urlObj.toString();
         }
         
+        // Get payment data from URL
         function getPaymentDataFromURL() {
             const urlParams = new URLSearchParams(window.location.search);
+            const txnId = urlParams.get('txnId');
+            const paymentStatus = urlParams.get('Status') || urlParams.get('status');
             
-            return {
-                match_id: urlParams.get('match_id'),
-                seat_type: urlParams.get('seat_type'),
-                quantity: urlParams.get('quantity'),
-                fullname: urlParams.get('fullname'),
-                email: urlParams.get('email'),
-                phone: urlParams.get('phone'),
-                total: urlParams.get('total')
-            };
+            if (txnId && paymentStatus) {
+                return {
+                    txnId: txnId,
+                    status: paymentStatus
+                };
+            }
+            
+            return null;
         }
         
+        // Complete payment process
         function completePayment(paymentData, referenceId) {
-            // In a real scenario, this would handle the Razorpay callback
-            // For this implementation, we'll simulate a successful payment
+            const orderId = new URLSearchParams(window.location.search).get('order_id') || localStorage.getItem('payment_initiated');
             
-            // Add razorpay parameters that would come from a real payment
-            const redirectParams = {
-                ...paymentData,
-                razorpay_payment_id: 'pay_' + Math.random().toString(36).substring(2, 15),
-                razorpay_order_id: 'order_' + Math.random().toString(36).substring(2, 15),
-                razorpay_signature: 'signature_' + Math.random().toString(36).substring(2, 30)
-            };
+            if (!orderId) return;
             
-            // Redirect to booking-confirmed page
-            window.location.href = addQueryParams(
-                window.location.origin + '/booking-confirmed',
-                redirectParams
-            );
+            // Fill UTR field if available
+            const utrField = document.getElementById('utr_number');
+            if (utrField && paymentData.txnId) {
+                utrField.value = paymentData.txnId;
+            }
+            
+            // Clear local storage
+            localStorage.removeItem('payment_initiated');
+            localStorage.removeItem('payment_time');
         }
     }
-    
+
     /**
      * Setup back navigation functionality
      */
     function setupBackNavigation() {
-        $('.back-link').on('click', function(e) {
-            // Check if we have previous history
-            if (window.history.length > 1) {
+        const backButtons = document.querySelectorAll('.back-btn, .back-link');
+        
+        backButtons.forEach(button => {
+            button.addEventListener('click', function(e) {
                 e.preventDefault();
                 window.history.back();
-            }
+            });
         });
     }
-    
+
     /**
      * Handle stadium map section selection
      */
     function setupStadiumSelection() {
-        $('.stadium-map path, .stadium-map .section').on('click', function() {
-            const section = $(this).data('section');
-            
-            if (section) {
-                // Find corresponding ticket type
-                const ticketType = mapSectionToTicketType(section);
+        const mapSections = document.querySelectorAll('.map-section');
+        
+        if (!mapSections.length) return;
+        
+        mapSections.forEach(section => {
+            section.addEventListener('click', function() {
+                const sectionName = this.getAttribute('data-section');
+                const sectionPrice = this.getAttribute('data-price');
                 
-                // Update selection
-                $('.ticket-type-option').removeClass('selected');
-                $('.ticket-type-option[data-type="' + ticketType + '"]').addClass('selected');
+                // Map section to ticket type
+                mapSectionToTicketType(sectionName);
                 
-                // Update form field
-                $('input[name="seat_type"]').val(ticketType);
-                
-                // Show selected section feedback
-                showSelectedSection(section);
-            }
+                // Show selected section message
+                showSelectedSection(sectionName);
+            });
         });
         
         function mapSectionToTicketType(section) {
-            // Map section names to ticket types
-            const sectionMap = {
-                'VIP': 'VIP Stand',
-                'Premium': 'Premium Stand',
-                'Pavilion': 'Pavilion Stand',
-                'General': 'General Stand',
-                'Corporate': 'Corporate Box'
-            };
+            const ticketCards = document.querySelectorAll('.ticket-type-card');
             
-            // Check if section contains one of the key words
-            for (const key in sectionMap) {
-                if (section.includes(key)) {
-                    return sectionMap[key];
+            let foundCard = false;
+            
+            ticketCards.forEach(card => {
+                const cardType = card.querySelector('.ticket-type-name').textContent.trim();
+                
+                if (cardType === section) {
+                    card.click();
+                    foundCard = true;
                 }
-            }
+            });
             
-            // Default to General Stand
-            return 'General Stand';
+            // If no matching card found, select first one
+            if (!foundCard && ticketCards.length > 0) {
+                ticketCards[0].click();
+            }
         }
         
         function showSelectedSection(section) {
-            // Show toast notification
-            if ($('.section-toast').length === 0) {
-                $('<div class="section-toast"></div>').appendTo('body');
+            const selectionMessage = document.querySelector('.selection-message');
+            
+            if (selectionMessage) {
+                selectionMessage.innerHTML = 'You selected <strong>' + section + '</strong>';
+                selectionMessage.style.display = 'block';
             }
-            
-            $('.section-toast').text('Selected: ' + section).addClass('show');
-            
-            setTimeout(function() {
-                $('.section-toast').removeClass('show');
-            }, 2000);
         }
     }
-    
-    /**
-     * Initialize on document ready
-     */
-    $(document).ready(function() {
-        initBooking();
-        
-        if ($('.stadium-map').length) {
-            setupStadiumSelection();
-        }
-    });
-    
-})(jQuery);
+})();

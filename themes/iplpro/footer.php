@@ -1,95 +1,103 @@
 <?php
 /**
- * The footer for the IPL Pro theme
+ * The template for displaying the footer
+ *
+ * Contains the closing of the #content div and all content after.
+ *
+ * @link https://developer.wordpress.org/themes/basics/template-files/#template-partials
  *
  * @package iplpro
  */
+
 ?>
 
-    </div><!-- #content -->
+	</div><!-- #content -->
 
-    <footer id="colophon" class="site-footer">
-        <div class="footer-container">
-            <div class="footer-partners">
-                <div class="partners-section">
-                    <h3>Official Broadcaster</h3>
-                    <div class="partner-logo">
-                        <svg class="star-sports" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M12,2L14.2,7.2L20,8.3L16,12.2L17.2,18L12,15.3L6.8,18L8,12.2L4,8.3L9.8,7.2L12,2Z" fill="#ffffff" />
-                        </svg>
-                        <span>Star Sports</span>
-                    </div>
-                </div>
-                
-                <div class="partners-section">
-                    <h3>Title Sponsor</h3>
-                    <div class="partner-logo">
-                        <svg class="tata" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M3,3H21V21H3V3M5,5V19H19V5H5Z" fill="#ffffff" />
-                        </svg>
-                        <span>TATA</span>
-                    </div>
-                </div>
-                
-                <div class="partners-section">
-                    <h3>Official Digital Streaming Partner</h3>
-                    <div class="partner-logo">
-                        <svg class="jio-cinema" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" fill="#ffffff" />
-                        </svg>
-                        <span>JioCinema</span>
-                    </div>
-                </div>
-                
-                <div class="partners-section">
-                    <h3>Associate Partner</h3>
-                    <div class="partner-logo">
-                        <svg class="mygov" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2Z" fill="#ffffff" />
-                        </svg>
-                        <span>MyGov</span>
-                    </div>
-                </div>
-                
-                <div class="partners-section">
-                    <h3>Official Payment Partner</h3>
-                    <div class="partner-logo">
-                        <svg class="rupay" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M20,8H4V6H20V8M18,2H6V4H18V2M22,12V20A2,2 0 0,1 20,22H4A2,2 0 0,1 2,20V12A2,2 0 0,1 4,10H20A2,2 0 0,1 22,12M16,16H8V14H16V16Z" fill="#ffffff" />
-                        </svg>
-                        <span>RuPay</span>
-                    </div>
-                </div>
-                
-                <div class="partners-section">
-                    <h3>Official Umpire Partner</h3>
-                    <div class="partner-logo">
-                        <svg class="paytm" width="40" height="40" viewBox="0 0 24 24">
-                            <path d="M20,8H4V6H20V8M18,2H6V4H18V2M22,12V20A2,2 0 0,1 20,22H4A2,2 0 0,1 2,20V12A2,2 0 0,1 4,10H20A2,2 0 0,1 22,12M16,16H8V14H16V16Z" fill="#ffffff" />
-                        </svg>
-                        <span>CEAT</span>
-                    </div>
-                </div>
-            </div><!-- .footer-partners -->
-            
-            <div class="footer-bottom">
-                <div class="footer-menu">
-                    <?php
-                    wp_nav_menu(array(
-                        'theme_location' => 'footer',
-                        'menu_id'        => 'footer-menu',
-                        'container'      => false,
-                        'depth'          => 1,
-                    ));
-                    ?>
-                </div><!-- .footer-menu -->
-                
-                <div class="site-info">
-                    <p>&copy; <?php echo date('Y'); ?> <?php bloginfo('name'); ?>. All rights reserved.</p>
-                </div><!-- .site-info -->
-            </div><!-- .footer-bottom -->
-        </div><!-- .footer-container -->
-    </footer><!-- #colophon -->
+	<footer id="colophon" class="site-footer">
+		<div class="container">
+			<div class="footer-content">
+				<div class="footer-column">
+					<?php
+					// Footer logo
+					if (has_custom_logo()) {
+						$custom_logo_id = get_theme_mod('custom_logo');
+						$logo = wp_get_attachment_image_src($custom_logo_id, 'full');
+						if ($logo) {
+							echo '<img src="' . esc_url($logo[0]) . '" alt="' . get_bloginfo('name') . '" class="footer-logo">';
+						}
+					} else {
+						echo '<h3 class="site-title">' . get_bloginfo('name') . '</h3>';
+					}
+					?>
+					<p><?php echo esc_html__('Book your IPL 2025 tickets online. Secure your seats for the most exciting cricket tournament in the world.', 'iplpro'); ?></p>
+				</div>
+
+				<div class="footer-column">
+					<h4 class="footer-title"><?php echo esc_html__('Quick Links', 'iplpro'); ?></h4>
+					<?php
+					wp_nav_menu(
+						array(
+							'theme_location' => 'footer',
+							'menu_class'     => 'footer-menu',
+							'depth'          => 1,
+							'fallback_cb'    => false,
+						)
+					);
+					?>
+				</div>
+
+				<div class="footer-column">
+					<h4 class="footer-title"><?php echo esc_html__('Venues', 'iplpro'); ?></h4>
+					<ul class="footer-menu">
+						<?php
+						$stadiums = get_terms(array(
+							'taxonomy' => 'stadium',
+							'hide_empty' => false,
+							'number' => 5,
+						));
+
+						if (!is_wp_error($stadiums) && !empty($stadiums)) {
+							foreach ($stadiums as $stadium) {
+								echo '<li><a href="' . esc_url(get_term_link($stadium)) . '">' . esc_html($stadium->name) . '</a></li>';
+							}
+						}
+						?>
+					</ul>
+				</div>
+
+				<div class="footer-column">
+					<h4 class="footer-title"><?php echo esc_html__('Contact Us', 'iplpro'); ?></h4>
+					<ul class="footer-menu">
+						<li><?php echo esc_html__('Email: support@ipltickets.com', 'iplpro'); ?></li>
+						<li><?php echo esc_html__('Phone: +91 1234567890', 'iplpro'); ?></li>
+						<li><?php echo esc_html__('Working Hours: 10AM - 6PM', 'iplpro'); ?></li>
+					</ul>
+					<div class="footer-social">
+						<a href="#" aria-label="Facebook"><span class="dashicons dashicons-facebook-alt"></span></a>
+						<a href="#" aria-label="Twitter"><span class="dashicons dashicons-twitter"></span></a>
+						<a href="#" aria-label="Instagram"><span class="dashicons dashicons-instagram"></span></a>
+						<a href="#" aria-label="YouTube"><span class="dashicons dashicons-youtube"></span></a>
+					</div>
+				</div>
+			</div>
+
+			<div class="footer-bottom">
+				<div class="footer-partners">
+					<span><?php echo esc_html__('Official Partners:', 'iplpro'); ?></span>
+					<img src="<?php echo esc_url(get_template_directory_uri() . '/assets/images/sponsors.png'); ?>" alt="<?php echo esc_attr__('Official Partners', 'iplpro'); ?>">
+				</div>
+				<div class="copyright">
+					<?php
+					$footer_text = get_theme_mod('iplpro_footer_text', '© ' . date('Y') . ' IPL Pro. All rights reserved.');
+					echo wp_kses_post($footer_text);
+					?>
+				</div>
+				<div class="site-info">
+					<?php echo esc_html__('Terms & Conditions | Privacy Policy | Refund Policy', 'iplpro'); ?>
+				</div>
+			</div>
+		</div>
+	</footer><!-- #colophon -->
 </div><!-- #page -->
 
 <?php wp_footer(); ?>
