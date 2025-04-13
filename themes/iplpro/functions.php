@@ -363,20 +363,6 @@ function iplpro_archive_title($title) {
 add_filter('get_the_archive_title', 'iplpro_archive_title');
 
 /**
- * Add page slug to body class
- */
-function iplpro_body_classes($classes) {
-    global $post;
-    
-    if (isset($post)) {
-        $classes[] = $post->post_type . '-' . $post->post_name;
-    }
-    
-    return $classes;
-}
-add_filter('body_class', 'iplpro_body_classes');
-
-/**
  * Configure email settings for order confirmations
  */
 function iplpro_configure_emails() {
